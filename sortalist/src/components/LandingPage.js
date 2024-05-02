@@ -21,7 +21,7 @@ function LandingPage() {
       }}
     >
       <Box>
-        <div>
+        
             <Typography variant="h2" component="h1">
               Where Words Meet <strong>Play</strong>
             </Typography>
@@ -33,7 +33,7 @@ function LandingPage() {
                 <Button variant="contained" color="primary">Get Started</Button>
                 <Button variant="outlined" color="primary">Sign in with Google</Button>
             </Box>
-        </div>
+        
       </Box>
       <Box mt={-17}>
         <img src="/images/landing_image.png" alt="Landing" style={{ width: '100%', height: 'auto' }} />
