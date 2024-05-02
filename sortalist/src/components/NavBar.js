@@ -13,17 +13,23 @@ function NavBar() {
             <img src="./images/logo.png" alt="SortaList Logo" style={{ height: '35px' }}/>                    
             <span font-color='black'>SortaList</span>
             </Typography>
-            <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} alignItems="center">
+            <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} justifyContent="center" alignItems="center" flexGrow={1}>
                 {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
-                <Box mr={2}>
-                    <Link to="/how-it-works" color="inherit" underline="none">How it works</Link>
-                </Box>
-                <Box mr={2}>
-                    <Link to="/about-us" color="inherit" underline="none">About us</Link>
-                </Box>
-                <Box mr={2}>
-                    <Link to="/contact" color="inherit" underline="none">Contact</Link>
-                </Box>
+                <Typography variant="body1" color="text.primary">
+                    <Box mr={2}>
+                        <Link to="/how-it-works" color="inherit" underline="none">How it works</Link>
+                    </Box>
+                </Typography>
+                <Typography variant="body1" color="text.primary">
+                    <Box mr={2}>
+                        <Link to="/about-us" color="inherit" underline="none">About us</Link>
+                    </Box>
+                </Typography>
+                <Typography variant="body1" color="text.primary">
+                    <Box mr={2}>
+                        <Link to="/contact" color="inherit" underline="none">Contact</Link>
+                    </Box>
+                </Typography>
             </Box>
             {/* Add the Login and Sign Up button to the top right of the navigation bar */}
             <Box>
