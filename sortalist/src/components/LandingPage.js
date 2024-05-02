@@ -15,13 +15,15 @@ function LandingPage() {
       py={isMobile ? 5 : 2}
       style={{
         backgroundImage: `url(${process.env.PUBLIC_URL + '/images/background_lp.png'})`,
-        backgroundPosition: 'bottom right',
+        backgroundPosition: 'center', // Center the image
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain'
+        backgroundSize: 'cover', // Cover the entire container
+        height: '100vh', // Full height of the viewport
+        width: '100vw', // Full width of the viewport
       }}
     >
       <Box>
-        
+        <div>
             <Typography variant="h2" component="h1">
               Where Words Meet <strong>Play</strong>
             </Typography>
@@ -33,7 +35,7 @@ function LandingPage() {
                 <Button variant="contained" color="primary">Get Started</Button>
                 <Button variant="outlined" color="primary">Sign in with Google</Button>
             </Box>
-        
+        </div>
       </Box>
       <Box mt={-17}>
         <img src="/images/landing_image.png" alt="Landing" style={{ width: '100%', height: 'auto' }} />

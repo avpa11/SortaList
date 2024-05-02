@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, useMediaQuery, useTheme } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, useMediaQuery, useTheme, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function NavBar() {
@@ -16,18 +16,18 @@ function NavBar() {
             <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} justifyContent="center" alignItems="center" flexGrow={1}>
                 {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
                 <Typography variant="body1" color="text.primary">
-                    <Box mr={2}>
-                        <Link to="/how-it-works" color="inherit" underline="none">How it works</Link>
+                    <Box mr={5}>
+                        <MuiLink to="/how-it-works" color="inherit" underline="none">How it works</MuiLink>
                     </Box>
                 </Typography>
                 <Typography variant="body1" color="text.primary">
-                    <Box mr={2}>
-                        <Link to="/about-us" color="inherit" underline="none">About us</Link>
+                    <Box mr={5}>
+                        <MuiLink to="/about-us" color="inherit" underline="none">About us</MuiLink>
                     </Box>
                 </Typography>
                 <Typography variant="body1" color="text.primary">
-                    <Box mr={2}>
-                        <Link to="/contact" color="inherit" underline="none">Contact</Link>
+                    <Box mr={5}>
+                        <MuiLink to="/contact" color="inherit" underline="none">Contact</MuiLink>
                     </Box>
                 </Typography>
             </Box>

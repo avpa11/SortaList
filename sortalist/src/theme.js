@@ -13,6 +13,17 @@ const theme = createTheme({
     typography: {
         fontFamily: 'Lato, Arial, sans-serif',
     },
+    components: {
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    color: 'black',
+                    fontSize: '1.0rem',
+                    fontWeight: 'bold',
+                },
+            },
+        },
+    },
 });
 
 export default theme;
