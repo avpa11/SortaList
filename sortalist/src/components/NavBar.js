@@ -1,24 +1,37 @@
-import React, {useState} from 'react';
-import {AppBar, Toolbar, IconButton, Typography, Button} from '@mui/material';
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button, Box, useMediaQuery, useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function NavBar() {
-  return (
-    <AppBar position="relative">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <img src="./images/logo.png" alt="SortaList Logo" style={{ height: '30px' }}/>                    
-          <span> SortaList</span>
-        </Typography>
-        {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
-        <Link href="/how-it-works" color="inherit" underline="none">How it works</Link>
-        <Link href="/about-us" color="inherit" underline="none">About us</Link>
-        <Link href="/contact" color="inherit" underline="none">Contact</Link>
-        {/* Add the Login and Sign Up button to the top right of the navigation bar */}
-        <Button color="inherit">Login</Button>
-        <Button color="inherit">Sign Up</Button>
-      </Toolbar>
-    </AppBar>    
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    return (
+        <AppBar position="relative" sx={{ backgroundColor: 'transparent', boxShadow: 'none', boxShadow: 'none', marginBottom: 0 }}>
+        <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'black', display: 'flex', alignItems: 'center' }}>
+            <img src="./images/logo.png" alt="SortaList Logo" style={{ height: '35px' }}/>                    
+            <span font-color='black'>SortaList</span>
+            </Typography>
+            <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} alignItems="center">
+                {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
+                <Box mr={2}>
+                    <Link to="/how-it-works" color="inherit" underline="none">How it works</Link>
+                </Box>
+                <Box mr={2}>
+                    <Link to="/about-us" color="inherit" underline="none">About us</Link>
+                </Box>
+                <Box mr={2}>
+                    <Link to="/contact" color="inherit" underline="none">Contact</Link>
+                </Box>
+            </Box>
+            {/* Add the Login and Sign Up button to the top right of the navigation bar */}
+            <Box>
+                <Button variant="outlined" color="primary" sx={{ mr: 1 }}>Login</Button>
+                <Button variant="contained" color="primary">Sign Up</Button>
+            </Box>
+        </Toolbar>
+        </AppBar>    
   )
 }
 
