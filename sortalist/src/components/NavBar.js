@@ -17,7 +17,7 @@ function NavBar() {
                 {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
                 <Typography variant="body1" color="text.primary">
                     <Box mr={5}>
-                        <MuiLink to="/how-it-works" color="inherit" underline="none">How it works</MuiLink>
+                        <MuiLink component={Link} to="/instructions" color="inherit" underline="none">How it works</MuiLink>
                     </Box>
                 </Typography>
                 <Typography variant="body1" color="text.primary">
