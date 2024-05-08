@@ -1,50 +1,86 @@
 import React from "react";
-import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
-import { autoBatchEnhancer } from "@reduxjs/toolkit";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 const AboutPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Box>
-      <Box position="absolute" top={0} right={300} zIndex={-1}>
-        <img src="/images/PinkBlob2.png" alt="Pink Blob2" />
-      </Box>
+      {!isMobile && (
+        <Box position="absolute" top={0} right={300} zIndex={-1} sx={{}}>
+          <img src="/images/PinkBlob2.png" alt="Pink Blob2" />
+        </Box>
+      )}
 
-      <Box position="absolute" bottom={0} left={0}>
-        <img
-          src="/images/GreenBlob2.png"
-          alt="GreenBlob2"
-        />
-      </Box>
+      {!isMobile && (
+        <Box position="absolute" bottom={0} left={0}>
+          <img src="/images/GreenBlob2.png" alt="GreenBlob2" />
+        </Box>
+      )}
 
-      <Box pt={10} pl={10}>
+      <Box pt={10} pl={isMobile ? 2 : 10}>
         <Typography variant="h3" fontWeight="bold">
           About Us
         </Typography>
-        <Box pt={7}>
+        <Box pt={isMobile ? 0 : 7}>
           <Box>
-            <Box display="flex" flexDirection="row">
-              <Box style={{ width: 1200 }}>
-                <Typography variant="body1">
+            <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
+              <Box>
+                {isMobile && (
+                  <Box
+                    component="img"
+                    alt="Logo Icon"
+                    src="/images/logo3.png"
+                  />
+                )}
+
+                <Typography
+                  variant="body1"
+                  style={{ width: "auto", marginBottom: isMobile ? 20 : 1 }}
+                >
                   Imagine effortlessly captivating your audience from the very
                   start.
                 </Typography>
-                <Typography variant="body1" paragraph>
+                <Typography
+                  variant="body1"
+                  paragraph
+                  style={{ marginBottom: isMobile ? 20 : 1 }}
+                >
                   SortaList transforms the way you engage with your listeners,
                   turning word
                   <br /> sorting into a dynamic and interactive game.
-                  <br />
+                </Typography>
+                <Typography
+                  variant="body1"
+                  paragraph
+                  style={{ marginBottom: isMobile ? 20 : 1 }}
+                >
                   Welcome to a new era of presentations where breaking the ice
                   is as easy as a blink.
                 </Typography>
               </Box>
 
-              <Box style={{ width: 200 }}>
-                <Box
-                  component="img"
-                  alt="Twitter Icon"
-                  src="/images/logo2.png"
-                  style={{ width: 200, height: "auto", marginTop: -50 }} // Adjust marginTop here
-                />
+              <Box style={{ width: "auto" }}>
+                {!isMobile && (
+                  <Box
+                    component="img"
+                    alt="Logo Icon"
+                    src="/images/logo2.png"
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      marginTop: isMobile ? 0 : -60,
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           </Box>
@@ -57,11 +93,7 @@ const AboutPage = () => {
       </Box>
       <Box m={30} />
 
-      <Box
-        bgcolor="#FFD700"
-        p={5}
-        minHeight="39vh">
-        
+      <Box bgcolor="#FFD700" p={5} minHeight="39vh" >
         <Box
           p={3}
           display="flex"
