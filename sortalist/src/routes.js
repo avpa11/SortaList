@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { getIsUserAuth } from "./redux/slices/user";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/Dashboard";
+import InstructionsPage from "./pages/InstructionsPage"; // Import InstructionsPage
 
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {

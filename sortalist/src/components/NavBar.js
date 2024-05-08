@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -87,7 +88,7 @@ function NavBar() {
           {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
           <Typography variant="body1" color="text.primary">
             <Box mr={5}>
-              <MuiLink to="/how-it-works" color="inherit" underline="none">
+              <MuiLink component={Link} to="/instructions" color="inherit" underline="none">
                 How it works
               </MuiLink>
             </Box>
@@ -113,7 +114,7 @@ function NavBar() {
             {/* <Button variant="outlined" color="primary" sx={{ mr: 1 }}>
               Login
             </Button> */}
-            <Button variant="contained" color="primary">
+            <Button style={{ zIndex: 1 }} variant="contained" color="primary">
               Sign Up
             </Button>
           </Box>

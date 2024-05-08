@@ -5,11 +5,10 @@ function Instructions() {
   return (
     <Box>
 
-      <Box position="absolute" top={0} right={0}>
+      <Box position="absolute" top={0} right={0} zIndex={0}>
         <img
           src="/images/PurpleBlob.png"
           alt="Purple Blob"
-          style={{ width: "100px", height: "100px" }}
         />
       </Box>
 
