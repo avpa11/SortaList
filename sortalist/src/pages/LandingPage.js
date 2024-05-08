@@ -65,8 +65,8 @@ const LandingPage = () => {
           backgroundPosition: "center", // Center the image
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover", // Cover the entire container
-          height: "100vh", // Full height of the viewport
-          width: "100vw", // Full width of the viewport
+          //height: "100vh", // Full height of the viewport
+          //width: "100vw", // Full width of the viewport
         }}
       >
         <Grid container>
