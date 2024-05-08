@@ -11,9 +11,15 @@ const theme = createTheme({
     secondary: {
       main: "#3d5afe",
     },
+    violet: {
+      main: "#575DFB",
+    },
   },
   typography: {
     fontFamily: "Lato, Arial, sans-serif",
+    body2: {
+      fontFamily: "Inter",
+    },
   },
   components: {
     MuiLink: {
