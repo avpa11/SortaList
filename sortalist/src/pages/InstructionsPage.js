@@ -5,7 +5,7 @@ function Instructions() {
   return (
     <Box>
 
-      <Box position="absolute" top={0} right={0} zIndex={0}>
+      <Box position="absolute" top={0} right={0} zIndex={-2}>
         <img
           src="/images/PurpleBlob.png"
           alt="Purple Blob"
@@ -27,7 +27,7 @@ function Instructions() {
         />
       </Box>
 
-      <Typography variant="h2" align="center" gutterBottom>
+      <Typography align="center" variant="h3" fontWeight="bold" gutterBottom>
         How It Works
       </Typography>
 
@@ -72,7 +72,7 @@ function Instructions() {
             <Box m={2} />
 
             <Typography variant="body1" align="center">
-              Tailor your game to perfectly match your presentation and
+              Tailor your game to perfectly match your presentation  <br />and
               captivate your audience!
             </Typography>
           </Box>
@@ -93,7 +93,7 @@ function Instructions() {
             <Box m={2} />
 
             <Typography variant="body1" align="center">
-              Empower your audience with engaging brain-teasers that educate and
+              Empower your audience with engaging  <br />brain-teasers that educate and
               entertain!
             </Typography>
           </Box>
@@ -102,7 +102,7 @@ function Instructions() {
 
       {/* Get started button */}
       <Box display="flex" justifyContent="center" mt={4}>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary"  style={{ width: '200px' }}>
           Get Started
         </Button>
       </Box>
