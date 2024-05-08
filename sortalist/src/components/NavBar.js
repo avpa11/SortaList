@@ -95,7 +95,7 @@ function NavBar() {
           </Typography>
           <Typography variant="body1" color="text.primary">
             <Box mr={5}>
-              <MuiLink to="/about-us" color="inherit" underline="none">
+              <MuiLink component={Link} to="/about-us" color="inherit" underline="none">
                 About us
               </MuiLink>
             </Box>

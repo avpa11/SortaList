@@ -31,13 +31,9 @@ function Instructions() {
         How It Works
       </Typography>
 
-      {/* Dev and boxes in a row */}
       <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
-        {/* Dev box */}
 
-        {/* Boxes in a column */}
         <Box display="flex" flexDirection="row">
-          {/* Easy to use box */}
           <Box justifyContent="center" alignItems="center" p={2} mb={2}>
             <Box
               component="img"
