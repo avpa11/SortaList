@@ -20,11 +20,6 @@ const AboutPage = () => {
         </Box>
       )}
 
-      {!isMobile && (
-        <Box position="absolute" bottom={0} left={0}>
-          <img src="/images/GreenBlob2.png" alt="GreenBlob2" />
-        </Box>
-      )}
 
       <Box pt={10} pl={isMobile ? 2 : 10}>
         <Typography variant="h3" fontWeight="bold">
@@ -94,6 +89,7 @@ const AboutPage = () => {
       <Box m={30} />
 
       <Box bgcolor="#FFD700" p={5} minHeight="39vh" >
+        
         <Box
           p={3}
           display="flex"

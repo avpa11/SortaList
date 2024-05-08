@@ -19,13 +19,13 @@ function Instructions() {
       )}
 
       {!isMobile && (
-        <Box position="absolute" bottom={0} left={0}>
+        <Box position="absolute" bottom={0} left={0} zIndex={-1}>
           <img src="/images/PinkBlob.png" alt="PinkBlob" />
         </Box>
       )}
 
       {!isMobile && (
-        <Box position="absolute" bottom={0} right={0}>
+        <Box position="absolute" bottom={0} right={0} zIndex={-1}>
           <img src="/images/GreenBlob.png" alt="GreenBlob" />
         </Box>
       )}
