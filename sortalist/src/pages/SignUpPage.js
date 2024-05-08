@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Divider,
   Grid,
@@ -15,9 +16,20 @@ import { Controller, useForm } from "react-hook-form";
 import PasswordTextField from "../components/PasswordField";
 import ContinueWithGoogleButton from "../components/ContinueWithGoogleButton";
 import Loading from "../components/Loading";
+import { auth } from "../firebase/firebase";
+import { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { signUpUser } from "../redux/slices/user";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSucess] = useState(null);
+  const dispatch = useDispatch();
 
   const {
     handleSubmit,
@@ -28,13 +40,50 @@ const LoginPage = () => {
   });
 
   const onSubmit = async ({ email, password }) => {
-    console.log("Not implemented yet");
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // user successfully created
+        const user = userCredential.user;
+
+        sendEmailVerification(user).then(() => {
+          setFormSucess(
+            "We have sent you sent you a link to your email. Please verify your account and then login."
+          );
+
+          if (user.emailVerified) {
+            // we store the data in redux store
+            dispatch(
+              signUpUser({
+                email: user.email,
+                uid: user.uid,
+                providerId: user.providerId,
+              })
+            );
+
+            navigate("/login", { replace: true });
+          }
+        });
+      })
+      .catch((error) => {
+        // const errorCode = error.code;
+        const errorMessage = error.message;
+        // TO-DO: there's gotta be some better error handling ಠ_ಠ
+        if (errorMessage === "Firebase: Error (auth/email-already-in-use).") {
+          setFormError("The provided email address is already in use.");
+        } else {
+          setFormError(
+            "Sorry, something went wrong. Please try again or contact us if the issue persists"
+          );
+        }
+      });
   };
 
   return (
     <>
       <WhiteCardBox mb={7}>
         {isSubmitting && <Loading />}
+        {formError && <Alert severity="error">{formError}</Alert>}
+        {formSuccess && <Alert severity="success">{formSuccess}</Alert>}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid
             container
@@ -155,7 +204,13 @@ const LoginPage = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Button fullWidth variant="contained" color="primary">
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+              >
                 Sign Up
               </Button>
             </Grid>

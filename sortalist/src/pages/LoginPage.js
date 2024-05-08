@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Divider,
   Grid,
@@ -15,9 +16,20 @@ import { Controller, useForm } from "react-hook-form";
 import PasswordTextField from "../components/PasswordField";
 import ContinueWithGoogleButton from "../components/ContinueWithGoogleButton";
 import Loading from "../components/Loading";
+import { auth } from "../firebase/firebase";
+import {
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { signUpUser } from "../redux/slices/user";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [formError, setFormError] = useState(null);
+  const [formSuccess, setFormSucess] = useState(null);
+  const dispatch = useDispatch();
 
   const {
     handleSubmit,
@@ -28,13 +40,48 @@ const LoginPage = () => {
   });
 
   const onSubmit = async ({ email, password }) => {
-    console.log("Not implemented yet");
+    signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        // successfully logged in
+        const user = userCredential.user;
+        if (user.emailVerified === true) {
+          // we store the data in redux store
+          dispatch(
+            signUpUser({
+              email: user.email,
+              uid: user.uid,
+              providerId: user.providerId,
+            })
+          );
+
+          // redirect the user to the landing authenticated page
+          navigate("/dashboard", { replace: true });
+        } else {
+          sendEmailVerification(user).then(() => {
+            setFormSucess(
+              "We have sent you sent you a link to your email. Please verify your account and log in again"
+            );
+          });
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        if (
+          errorMessage === "Firebase: Error (auth/wrong-password)." ||
+          errorMessage === "Firebase: Error (auth/user-not-found)."
+        ) {
+          setFormError("Incorrect email or password");
+        } else {
+          setFormError(
+            "Sorry, something went wrong. Please try again or contact us if the issue persists"
+          );
+        }
+      });
   };
 
   return (
     <>
       <WhiteCardBox mb={7}>
-        {isSubmitting && <Loading />}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid
             container
@@ -45,6 +92,9 @@ const LoginPage = () => {
             <Grid xs={12} item onClick={() => navigate("/onboarding")}>
               <ArrowBackIcon />
             </Grid>
+            {isSubmitting && <Loading />}
+            {formError && <Alert severity="error">{formError}</Alert>}
+            {formSuccess && <Alert severity="success">{formSuccess}</Alert>}
             <Grid xs={12} item>
               <Typography variant="h5" color={"violet.main"}>
                 Login
@@ -129,7 +179,13 @@ const LoginPage = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Button fullWidth variant="contained" color="primary">
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+              >
                 Login
               </Button>
             </Grid>
