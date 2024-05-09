@@ -74,7 +74,6 @@ const AppRoutes = () => {
           }
         >
           <Route path="/sign-up" element={<SignUpPage />} />
-          <Route path="/about-you" element={<AboutYouPage />} />
         </Route>
         <Route
           element={
