@@ -10,7 +10,9 @@ import ContentWithNoNavBarLayout from "./components/layouts/ContentWithNoNavBarL
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import GuestLoginPage from "./pages/GuestLoginPage";
-
+import InstructionsPage from "./pages/InstructionsPage";
+import AboutUsPage from "./pages/AboutUsPage";
+import TopBarLayout from "./components/layouts/NavBarWithContentLayout"
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -85,6 +87,14 @@ const AppRoutes = () => {
         >
           <Route path="/guest" element={<GuestLoginPage />} />
         </Route>
+
+       <Route element={<TopBarLayout />}>
+            <Route path="/instructions" element={<InstructionsPage />}></Route>
+          </Route>
+
+          <Route element={<TopBarLayout />}>
+            <Route path="/about-us" element={<AboutUsPage />}></Route>
+          </Route>
 
         {isUserAuth && (
           <Route element={<MiddleContentWithTopBarLayout />}>
