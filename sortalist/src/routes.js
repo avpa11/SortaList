@@ -13,6 +13,7 @@ import GuestLoginPage from "./pages/GuestLoginPage";
 import InstructionsPage from "./pages/InstructionsPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import TopBarLayout from "./components/layouts/NavBarWithContentLayout"
+import AboutYouPage from "./pages/AboutYouPage";
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -73,6 +74,7 @@ const AppRoutes = () => {
           }
         >
           <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/about-you" element={<AboutYouPage />} />
         </Route>
         <Route
           element={

@@ -66,7 +66,7 @@ const AboutYouPage = () => {
             justifyContent="center"
             spacing={2}
           >
-            <Grid xs={12} item onClick={() => navigate("/LoginPage")}>
+            <Grid xs={12} item onClick={() => navigate("/login")}>
               <ArrowBackIcon />
             </Grid>
             <Grid xs={12} item>

@@ -39,6 +39,21 @@ const LoginPage = () => {
     mode: "onChange",
   });
 
+  const isFirstTimeLogin = async (user) => {
+    // Check if the user has a display name (first name and last name)
+    if (!user.displayName) {
+      return true; // User doesn't have a display name, so it's the first time login
+    } else {
+      // User has a display name, check if it's formatted as first name and last name
+      const displayNameParts = user.displayName.split(" ");
+      if (displayNameParts.length < 2) {
+        return true; // Display name is not formatted correctly, consider it the first time login
+      }
+    }
+  
+    return false; // User has a properly formatted display name, not the first time login
+  };
+  
   const onSubmit = async ({ email, password }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
