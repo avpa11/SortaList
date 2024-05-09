@@ -53,13 +53,17 @@ const LoginPage = () => {
               providerId: user.providerId,
             })
           );
-
-          // redirect the user to the landing authenticated page
-          navigate("/dashboard", { replace: true });
+  
+          // Check if it's the first time logging in
+          if (isFirstTimeLogin(user)) {
+            navigate("/about-you", { replace: true });
+          } else {
+            navigate("/dashboard", { replace: true });
+          }
         } else {
           sendEmailVerification(user).then(() => {
             setFormSucess(
-              "We have sent you sent you a link to your email. Please verify your account and log in again"
+              "We have sent you a link to your email. Please verify your account and log in again"
             );
           });
         }
@@ -78,6 +82,7 @@ const LoginPage = () => {
         }
       });
   };
+  
 
   return (
     <>
