@@ -88,6 +88,7 @@ const AppRoutes = () => {
           }
         >
           <Route path="/guest" element={<GuestLoginPage />} />
+          <Route path="/about-you" element={<AboutYouPage />} />
         </Route>
 
        <Route element={<TopBarLayout />}>

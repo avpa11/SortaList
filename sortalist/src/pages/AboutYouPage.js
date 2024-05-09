@@ -11,9 +11,6 @@ import { firestore } from "../firebase/firebase";
 
 const AboutYouPage = () => {
   const navigate = useNavigate();
-  const isFirstTimeLogin = (user) => {
-    return user.isFirstTimeLogin === true;
-  };
   
   const updateUserProfile = async ({ firstName, lastName, isFirstTimeLogin }) => {
     const user = auth.currentUser;
