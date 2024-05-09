@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
   Typography,
   Button,
   Box,
-  Drawer,
-  List,
-  ListItem,
   useMediaQuery,
   useTheme,
   Link as MuiLink,
@@ -18,13 +15,38 @@ import {
   Alert,
   Grid,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { getIsUserAuth, signOutUser } from "../redux/slices/user";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import { motion, useCycle } from "framer-motion";
+import { Navigation } from "./animation/Navigation";
+import { MenuToggle } from "./animation/MenuToggle";
+import { useDimensions } from "../utils/useDimensions";
+
+const sidebar = {
+  open: (height = 1000) => ({
+    clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
+    transition: {
+      type: "spring",
+      stiffness: 20,
+      restDelta: 2,
+    },
+    backgroundColor: "rgba(255,255,255, 0.9)",
+  }),
+  closed: {
+    clipPath: "circle(25px at 40px 29px)",
+    transition: {
+      delay: 0.5,
+      type: "spring",
+      stiffness: 400,
+      damping: 40,
+    },
+    backgroundColor: "rgb(87, 93, 251)",
+  },
+};
 
 function NavBar() {
   const theme = useTheme();
@@ -34,7 +56,10 @@ function NavBar() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const [isOpen, toggleOpen] = useCycle(false, true);
+  const containerRef = useRef(null);
+  const { height } = useDimensions(containerRef);
 
   const logout = () => {
     signOut(auth)
@@ -56,10 +81,6 @@ function NavBar() {
     setAnchorEl(null);
   };
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   return (
     <div>
       <AppBar
@@ -71,16 +92,6 @@ function NavBar() {
         }}
       >
         <Toolbar>
-          {isMobile && (
-            <IconButton
-              edge="start"
-              color="primary"
-              aria-label="menu"
-              onClick={handleDrawerToggle}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
           <Typography
             variant="h6"
             component="div"
@@ -89,6 +100,8 @@ function NavBar() {
               color: "black",
               display: "flex",
               alignItems: "center",
+              justifyContent: isMobile ? "center" : "flex-start",
+              zIndex: 2,
             }}
             onClick={() => navigate("/")}
           >
@@ -110,14 +123,24 @@ function NavBar() {
               {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
               <Typography component="div" variant="body1" color="text.primary">
                 <Box mr={5}>
-                  <MuiLink component={Link} to="/instructions" color="inherit" underline="none">
+                  <MuiLink
+                    component={Link}
+                    to="/instructions"
+                    color="inherit"
+                    underline="none"
+                  >
                     How it works
                   </MuiLink>
                 </Box>
               </Typography>
               <Typography component="div" variant="body1" color="text.primary">
                 <Box mr={5}>
-                  <MuiLink component={Link} to="/about-us" color="inherit" underline="none">
+                  <MuiLink
+                    component={Link}
+                    to="/about-us"
+                    color="inherit"
+                    underline="none"
+                  >
                     About us
                   </MuiLink>
                 </Box>
@@ -125,93 +148,87 @@ function NavBar() {
             </Box>
           )}
           {/* Add the Login and Sign Up button to the top right of the navigation bar */}
-          {!isUserAuth ? (
-            <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-              flexGrow={0.3}
-              pl={3}
-            >
-              <Grid container>
-                <Grid item xs={12} md={6}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => navigate("/login")}
-                    sx={{ mr: 1 }}
-                  >
-                    Login
-                  </Button>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate("/sign-up")}
-                  >
-                    Sign Up
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          ) : (
-            <Box>
-              <IconButton
-                size="x-large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color={theme.palette.primary.main}
+          {!isMobile &&
+            (!isUserAuth ? (
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+                flexGrow={0.3}
+                pl={3}
               >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                {error && <Alert severity="error">{error}</Alert>}
+                <Grid container>
+                  <Grid item xs={12} md={6}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => navigate("/login")}
+                      sx={{ mr: 1 }}
+                    >
+                      Login
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => navigate("/sign-up")}
+                    >
+                      Sign Up
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            ) : (
+              <Box>
+                <IconButton
+                  size="x-large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color={theme.palette.primary.main}
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  {error && <Alert severity="error">{error}</Alert>}
 
-                <MenuItem onClick={() => navigate("/dashboard")}>
-                  Dashboard
-                </MenuItem>
-                <MenuItem onClick={() => logout()}>Logout</MenuItem>
-              </Menu>
-            </Box>
-          )}
+                  <MenuItem onClick={() => navigate("/dashboard")}>
+                    Dashboard
+                  </MenuItem>
+                  <MenuItem onClick={() => logout()}>Logout</MenuItem>
+                </Menu>
+              </Box>
+            ))}
         </Toolbar>
       </AppBar>
       {isMobile && (
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
+        <motion.nav
+          initial={false}
+          animate={isOpen ? "open" : "closed"}
+          custom={height}
+          ref={containerRef}
         >
-          <List>
-            <ListItem button component={MuiLink} to="/how-it-works">
-              How it works
-            </ListItem>
-            <ListItem button component={MuiLink} to="/about-us">
-              About us
-            </ListItem>
-            <ListItem button component={MuiLink} to="/contact">
-              Contact
-            </ListItem>
-          </List>
-        </Drawer>
+          <motion.div className="background" variants={sidebar} />
+          <Navigation isUserAuth={isUserAuth} />
+          <MenuToggle toggle={() => toggleOpen()} />
+        </motion.nav>
       )}
     </div>
   );
