@@ -89,6 +89,7 @@ const AboutYouPage = () => {
                 <Controller
                   rules={{
                     required: "Required",
+                    maxLength: { value: 100, message: "Max length is 100 characters" }
                   }}
                   render={({ field, fieldState: { error } }) => (
                     <TextFieldStyled
@@ -121,6 +122,7 @@ const AboutYouPage = () => {
                 <Controller
                   rules={{
                     required: "Required",
+                    maxLength: { value: 100, message: "Max length is 100 characters" }
                   }}
                   render={({ field, fieldState: { error } }) => (
                     <TextFieldStyled
