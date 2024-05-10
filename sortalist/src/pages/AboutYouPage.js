@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import FieldWithSeparateLabel from "../components/FieldWithSeparateLabel";
 import { Controller, useForm } from "react-hook-form";
 import Loading from "../components/Loading";
-import { auth } from "../firebase/firebase";
-import { firestore } from "../firebase/firebase";
+import { auth, firestore } from "../firebase/firebase";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; 
 
@@ -28,12 +27,13 @@ const AboutYouPage = () => {
       });
 
       // Add a new document in collection "UserProfiles"
-      const userRef = user.uid;
-      await setDoc(doc(db, "UserProfiles", userRef), {
-        firstName: "Los Angeles",
-        lastName: "CA",
-        isFirstTimeLogin: "USA"
-      });
+      const userRef = doc(firestore, "UserProfiles", user.uid);
+      await setDoc(userRef, {
+        firstName: firstName,
+        lastName: lastName,
+        isFirstTimeLogin: isFirstTimeLogin
+      }, { merge: true });
+      
       console.log("User profile updated successfully");
     } catch (error) {
       console.error("Error updating user profile:", error);
