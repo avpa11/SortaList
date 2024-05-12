@@ -38,7 +38,9 @@ const GuestLoginPage = () => {
       }
 
       dispatch(
-        signUpUser({})
+        signUpUser({
+          name: user.name,
+        })
       );
       navigate("/Play");
   
