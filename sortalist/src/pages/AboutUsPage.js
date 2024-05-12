@@ -20,9 +20,20 @@ const AboutPage = () => {
         </Box>
       )}
 
+      {!isMobile && (
+        <Box position="fixed" bottom={0} left={0} zIndex={0} sx={{}}>
+          <img src="/images/GreenBlob2.png" alt="Green Blob2" />
+        </Box>
+      )}
 
-      <Box pt={10} pl={isMobile ? 2 : 10}>
-        <Typography variant="h3" fontWeight="bold">
+      <Box pt={5} pl={isMobile ? 2 : 7}>
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          sx={{
+            textAlign: isMobile ? "center" : "left", // Center-align text on mobile, left-align otherwise
+          }}
+        >
           About Us
         </Typography>
         <Box pt={isMobile ? 0 : 7}>
@@ -31,15 +42,21 @@ const AboutPage = () => {
               <Box>
                 {isMobile && (
                   <Box
-                    component="img"
-                    alt="Logo Icon"
-                    src="/images/logo3.png"
-                  />
+                  mb={3}
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <img src="/images/logo3.png" alt="Pink logo3" />
+                    <Typography variant="h4" fontWeight="bold" mt={-5}>
+                      SortaList
+                    </Typography>
+                  </Box>
                 )}
 
                 <Typography
                   variant="body1"
-                  style={{ width: "auto", marginBottom: isMobile ? 20 : 1 }}
+                  style={{ marginBottom: isMobile ? 20 : 1 }}
                 >
                   Imagine effortlessly captivating your audience from the very
                   start.
@@ -63,33 +80,31 @@ const AboutPage = () => {
                 </Typography>
               </Box>
 
-              <Box style={{ width: "auto" }}>
-                {!isMobile && (
-                  <Box
-                    component="img"
-                    alt="Logo Icon"
-                    src="/images/logo2.png"
-                    style={{
-                      width: "auto",
-                      height: "auto",
-                      marginTop: isMobile ? 0 : -60,
-                    }}
-                  />
-                )}
-              </Box>
+              {!isMobile && (
+                <Box
+                  mt={-10}
+                  sx={{
+                    marginLeft: "auto",
+                    textAlign: "center",
+                  }}
+                >
+                  <img src="/images/logo3.png" alt="Pink logo3" />
+                  <Typography variant="h4" fontWeight="bold" mt={-5}>
+                    SortaList
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
         </Box>
-        <Typography variant="body1" paragraph>
-          SortaList is your ticket to unforgettable presentations that are
-          anything but boring. Elevate your lectures and captivate your audience
-          with ease.
-        </Typography>
       </Box>
-      <Box m={30} />
-
-      <Box bgcolor="#FFD700" p={5} minHeight="39vh" >
-        
+      {!isMobile && (<Box m={10} />)}
+      <Typography variant="body1" paragraph pl={isMobile ? 2 : 7}>
+        SortaList is your ticket to unforgettable presentations that are
+        anything but boring. Elevate your lectures and captivate your audience
+        with ease.
+      </Typography>
+      <Box bgcolor="#FFD700" zIndex={-1} flex={1} p={5} minHeight="50vh">
         <Box
           p={3}
           display="flex"
@@ -97,14 +112,14 @@ const AboutPage = () => {
           flexWrap="wrap"
           justifyContent="space-between"
         >
-          <Box display="flex" flexDirection="column" mb={2}>
+          <Box display="flex" flexDirection="column" mb={2} zIndex={1}>
             <Box m={1} />
             <Typography variant="h4" fontWeight="bold" color="white">
               Need help with
               <br />
               anything?
             </Typography>
-            <Box gap={2}>
+            <Box gap={2} zIndex={1}>
               <Box m={3} />
               <Box
                 component="img"

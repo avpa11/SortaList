@@ -29,13 +29,27 @@ function Instructions() {
           <img src="/images/GreenBlob.png" alt="GreenBlob" />
         </Box>
       )}
-
-      <Typography align="center" variant="h3" fontWeight="bold" gutterBottom>
-        How It Works
-      </Typography>
-
-      <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
-        <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography variant="h3" fontWeight="bold" pl={isMobile ? 0 : 5}>
+          How It Works
+        </Typography>
+      </Box>
+      <Box 
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        mt={4}
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection={isMobile ? "column" : "row"}
+        >
           <Box justifyContent="center" alignItems="center" p={2} mb={2}>
             <Box
               component="img"
@@ -103,7 +117,7 @@ function Instructions() {
       </Box>
 
       {/* Get started button */}
-      <Box display="flex" justifyContent="center" mt={4}>
+      <Box display="flex" justifyContent="center" mt={4}  pl={isMobile ? 0 : 5}>
         <Button variant="contained" color="primary" style={{ width: "200px" }}>
           Get Started
         </Button>
