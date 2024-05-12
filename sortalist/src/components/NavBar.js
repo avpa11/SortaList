@@ -201,14 +201,11 @@ function NavBar() {
           onClose={handleDrawerToggle}
         >
           <List>
-            <ListItem button component={MuiLink} to="/how-it-works">
+            <ListItem button component={Link} to="/instructions">
               How it works
             </ListItem>
-            <ListItem button component={MuiLink} to="/about-us">
+            <ListItem button component={Link} to="/about-us">
               About us
-            </ListItem>
-            <ListItem button component={MuiLink} to="/contact">
-              Contact
             </ListItem>
           </List>
         </Drawer>

@@ -34,7 +34,7 @@ function Instructions() {
         justifyContent="center"
         alignItems="center"
       >
-        <Typography variant="h3" fontWeight="bold" pl={isMobile ? 0 : 5}>
+        <Typography variant="h3" fontWeight="bold" mt={7} pl={isMobile ? 0 : 5}>
           How It Works
         </Typography>
       </Box>
