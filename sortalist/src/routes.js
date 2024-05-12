@@ -14,6 +14,7 @@ import InstructionsPage from "./pages/InstructionsPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import TopBarLayout from "./components/layouts/NavBarWithContentLayout"
 import AboutYouPage from "./pages/AboutYouPage";
+import GamePage from "./pages/GamePage";
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -96,6 +97,10 @@ const AppRoutes = () => {
 
           <Route element={<TopBarLayout />}>
             <Route path="/about-us" element={<AboutUsPage />}></Route>
+          </Route>
+
+          <Route element={<TopBarLayout />}>
+            <Route path="/play" element={<GamePage />}></Route>
           </Route>
 
         {isUserAuth && (
