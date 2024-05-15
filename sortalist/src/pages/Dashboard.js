@@ -50,7 +50,7 @@ const DashboardPage = () => {
       case 3:
         return <AddWords gameData={gameData} setGameData={setGameData} onNext={handleNextStep}/>;
       case 4:
-        return <FinishCreateGame gameData={gameData} />;
+        return <FinishCreateGame gameData={gameData} setGameData={setGameData} onNext={handleNextStep} />;
       default:
         return null;
     }
@@ -58,23 +58,25 @@ const DashboardPage = () => {
 
   return (
     <Box p={3}>
-            <SideNavBar />
-            {!creatingNewGame && (
-      <>
-        <GameBox gameId="TestGame" />
-        <Box mt={3}>
-          <Button
+              <Box mb={3}>
+          <Button xs={10}
             variant="contained"
-            color="primary"
+            style={{ backgroundColor: "#E1E2E9", width: "100%" }}
             onClick={handleCreateNewGame} // Set creatingNewGame to true when button is clicked
             startIcon={<AddCircleIcon />}
           >
             Create New Game
           </Button>
         </Box>
+      <Box display="flex" flexDirection="column" width={"100%"}>
+            {/* <SideNavBar /> */}
+            {!creatingNewGame && (
+      <>
+        <GameBox/>
       </>
     )}
       {creatingNewGame && renderStepComponent()}
+      </Box>
     </Box>
   );
 };

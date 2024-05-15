@@ -15,7 +15,8 @@ const AddCategories = ({ gameData, setGameData, onNext }) => {
 
   const handleChange = (index, value) => {
     const updatedCategories = [...categories];
-    updatedCategories[index] = value;
+
+    updatedCategories[index] = {name:value}
     setCategories(updatedCategories);
   };
 
@@ -51,7 +52,7 @@ const AddCategories = ({ gameData, setGameData, onNext }) => {
         >
           <TextField
             label={`Category ${index + 1}`}
-            value={category}
+            // value={category}
             onChange={(e) => handleChange(index, e.target.value)}
             variant="outlined"
             margin="normal"

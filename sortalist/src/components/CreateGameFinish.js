@@ -1,43 +1,20 @@
-// Step3.js
-import React, { useState } from 'react';
-
+import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
 const CreateGameFinish = ({ gameData, setGameData }) => {
-  const [words, setWords] = useState([]);
-
-  const addWord = () => {
-    setWords([...words, '']);
-  };
-
-  const handleChange = (index, value) => {
-    const updatedWords = [...words];
-    updatedWords[index] = value;
-    setWords(updatedWords);
-  };
-
-  const handleNext = () => {
-    setGameData({ ...gameData, words });
-    // Move to the next step
-  };
 
   return (
-    <div>
-      <h2>Add Words:</h2>
+    <Box maxWidth={600} mx="auto" my={4} p={3} boxShadow={3} borderRadius={8}>
+      <Typography variant="h4" mb={3}>Game Summary</Typography>
+      <Typography variant="body1" mb={3}>
+        Here is a summary of your game categories:
+      </Typography>
       {gameData.categories.map((category, index) => (
-        <div key={index}>
-          <h3>{category}</h3>
-          {words.map((word, idx) => (
-            <input
-              key={idx}
-              type="text"
-              value={word}
-              onChange={(e) => handleChange(idx, e.target.value)}
-            />
-          ))}
-          <button onClick={addWord}>Add Word</button>
-        </div>
+        <Typography key={index} variant="body1" mb={1}>
+          {category}
+        </Typography>
       ))}
-      <button onClick={handleNext}>Next</button>
-    </div>
+      <Button variant="contained" mt={3}>Next</Button>
+    </Box>
   );
 };
 
