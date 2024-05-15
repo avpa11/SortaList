@@ -4,15 +4,17 @@ import CategoryWordsInput from "./CategoryWordsInput";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import {firestore } from "../firebase/firebase";
 import { doc, setDoc } from "firebase/firestore"; 
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-const AddWords = ({ gameData, setGameData, onNext }) => {
+const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
     const createGame = async () => {
         try {
-          await setDoc(doc(firestore, "games", gameData.title), {
+          await setDoc(doc(firestore, "games", gameData.uniqueID), {
             categories: gameData.categories,
             gameTitle: gameData.title,
             creatorID: "TEST",
-            gameID: "TEST"
+            gameID: "TEST",
+            uniqueID: gameData.uniqueID
           });
           console.log("Game data written to the database successfully!");
     
@@ -30,8 +32,12 @@ const AddWords = ({ gameData, setGameData, onNext }) => {
           words: updatedWords,
         },
       }));
-      console.log(category)
     };
+
+    // const handlePrevious = () =>{
+    //     setGameData({ ...gameData});
+    //     onPrevious(); // Navigate back to the AddCategories component
+    // }
 
   return (
     <Box
@@ -40,11 +46,14 @@ const AddWords = ({ gameData, setGameData, onNext }) => {
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        maxWidth: "800px",
-        padding: "150px",
+        minWidth: "500px",
+        padding: "50px",
         borderRadius: "12px",
       }}
     >
+
+<ArrowBackIosIcon   sx={{ mb: 2}} onClick={onPrevious} />
+
       <Box mb={3}>
         <Typography variant="h5" fontWeight="bold" gutterBottom>
           Words:

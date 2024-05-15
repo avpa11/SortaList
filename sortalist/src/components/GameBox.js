@@ -42,7 +42,7 @@ function GameBox() {
   }
 
   return (
-    <Grid container spacing={2}>
+    <Grid style={{ width: "100%" }} container spacing={2}>
       {gameData.map((game) => (
 
         <Grid style={{ width: "100%" }} item key={game.id}>
