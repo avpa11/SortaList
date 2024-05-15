@@ -7,8 +7,9 @@ import Typography from "@mui/material/Typography";
 import { Drawer, Box, Button, ListItemIcon, ListItemText } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { Link } from "react-router-dom"; // Import Link for navigation
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-function GameBox() {
+import GameOptionsMenu from "./gameOptionsMenu"; // Adjust the path as needed
+
+function GameBox({ handleCreateNewGame }) {
   const [gameData, setGameData] = useState(null);
 
   useEffect(() => {
@@ -16,7 +17,6 @@ function GameBox() {
       try {
         const gamesCollectionRef = collection(firestore, "games");
         const snapshot = await getDocs(gamesCollectionRef);
-        console.log(snapshot);
         // Extract category names from each game
 
         if (!snapshot.empty) {
@@ -44,7 +44,6 @@ function GameBox() {
   return (
     <Grid style={{ width: "100%" }} container spacing={2}>
       {gameData.map((game) => (
-
         <Grid style={{ width: "100%" }} item key={game.id}>
           <Card variant="outlined">
             <CardContent
@@ -71,7 +70,17 @@ function GameBox() {
                 </Link>
               </Box>
               <Box mb={5} ml={2}>
-                <MoreVertIcon/>
+                <GameOptionsMenu
+                  gameData={{
+                    gameTitle: game.gameTitle,
+                    gameCategories: game.categories,
+                    creatorID: game.creatorID,
+                    gameID: game.gameID,
+                  }}
+                  uniqueID={game.uniqueID}
+                  setGameData={setGameData}
+                  handleCreateNewGame={handleCreateNewGame}
+                />
               </Box>
             </CardContent>
           </Card>

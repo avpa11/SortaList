@@ -20,7 +20,6 @@ const AddCategories = ({ gameData, setGameData, onNext, onPrevious }) => {
   };
 
   const handleValueChange = (index, value) => {
-    console.log("SDFsdf")
     // Update categories
     const updatedCategories = [...categories];
     updatedCategories[index] = { name: value };
@@ -40,22 +39,8 @@ const AddCategories = ({ gameData, setGameData, onNext, onPrevious }) => {
       return;
     }
 
-    //     // Update gameData with the values from text fields
-    // categories.forEach((category, index) => {
-    //   console.log("SDFSDFSDFSDF")
-    //   console.log("category: ", category)
-    //   console.log("category nbame: ", category)
-
-    //   const updatedGameData = [...gameData.categories];
-    //   updatedGameData[index] = { name: category };
-    //   console.log("updatedGameData", updatedGameData)
-    //   setGameData({ ...gameData, categories: updatedGameData });
-
-    // });
-
     setGameData({ ...gameData });
     onNext();
-    // Move to the next step
   };
 
   return (

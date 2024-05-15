@@ -18,19 +18,38 @@ import Divider from "@mui/material/Divider";
 const DashboardPage = () => {
   const [currentStep, setCurrentStep] = useState(0); // Initialize current step
   const [creatingNewGame, setCreatingNewGame] = useState(false); // Define creatingNewGame state variable
-
-  const handleCreateNewGame = () => {
-    setCurrentStep(1); // Start with Step 1 (CreateGameStart)
-    setCreatingNewGame(true); // Set creatingNewGame to true when creating a new game
-  };
-
+  
   const [gameData, setGameData] = useState({
     // Initialize empty game data object to store data collected from steps
     // Modify this object to match the structure of your game data
+    
     title: "",
     categories: [],
     // Add more properties as needed
   });
+
+  const handleCreateNewGame = (initialGameData) => {
+
+    setCurrentStep(1); // Start with Step 1 (CreateGameStart)
+    setCreatingNewGame(true); // Set creatingNewGame to true when creating a new game
+    if (initialGameData) {
+      // If initialGameData is provided, initialize gameData with it
+      setGameData({
+        title: initialGameData.gameTitle || "", // Set title from initialGameData or empty string if not provided
+        categories: initialGameData.gameCategories || [], // Set categories from initialGameData or empty array if not provided
+        // Add more properties as needed
+      });
+    } else {
+      // If no initialGameData is provided, initialize gameData with default values
+      setGameData({
+        title: "",
+        categories: [],
+        // Add more properties as needed
+      });
+    }
+  };
+
+
 
   const handleNextStep = () => {
     setCurrentStep(currentStep + 1);
@@ -138,7 +157,7 @@ const DashboardPage = () => {
                 color: "black",
                 fontWeight: "bold",
               }}
-              onClick={handleCreateNewGame} // Set creatingNewGame to true when button is clicked
+              onClick={() => handleCreateNewGame()} // Call handleCreateNewGame without initial data
               disableElevation={true}
             >
               + New Game
@@ -150,7 +169,7 @@ const DashboardPage = () => {
         {/* <SideNavBar /> */}
         {!creatingNewGame && (
           <>
-            <GameBox />
+            <GameBox handleCreateNewGame={handleCreateNewGame}/>
           </>
         )}
         {creatingNewGame && renderStepComponent()}

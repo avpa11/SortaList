@@ -2,7 +2,7 @@
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 
-const CreateGameStart = ({ gameData, setGameData, onNext, onPrevious }) => {
+const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => {
   const handleChange = (e) => {
     setGameData({ ...gameData, title: e.target.value });
   };
