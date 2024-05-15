@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, TextField, Box, Typography, Divider } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { Category } from "@mui/icons-material";
 
 const CategoryWordsInput = ({ index, categoryName, category, initialWords, onUpdate }) => {
   const [words, setWords] = useState(initialWords.length > 0 ? initialWords : [""]);
@@ -35,7 +34,7 @@ const CategoryWordsInput = ({ index, categoryName, category, initialWords, onUpd
             value={word}
             onChange={(e) => handleChange(idx, e.target.value)}
             variant="outlined"
-            sx={{ bgcolor: "white" }} // Set the desired background color
+            sx={{ bgcolor: "white" }}
             fullWidth
           />
           {idx > 0 && (
