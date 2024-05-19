@@ -14,6 +14,8 @@ import FinishCreateGame from "../components/CreateGameFinish";
 import AddCategories from "../components/AddCategories";
 import AddWords from "../components/AddWords";
 import Divider from "@mui/material/Divider";
+import TextField from '@mui/material/TextField';
+
 
 const DashboardPage = () => {
   const [currentStep, setCurrentStep] = useState(0); // Initialize current step
@@ -27,6 +29,11 @@ const DashboardPage = () => {
     categories: [],
     // Add more properties as needed
   });
+
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleCreateNewGame = (initialGameData) => {
 
@@ -167,9 +174,18 @@ const DashboardPage = () => {
 
       <Box display="flex" flexDirection="column" width={"auto"}>
         {/* <SideNavBar /> */}
+        <Box>
+        <TextField
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Search..."
+          variant="outlined"
+          fullWidth
+        />
+        </Box>
         {!creatingNewGame && (
           <>
-            <GameBox handleCreateNewGame={handleCreateNewGame}/>
+            <GameBox handleCreateNewGame={handleCreateNewGame} searchTerm={searchTerm}/>
           </>
         )}
         {creatingNewGame && renderStepComponent()}

@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid";
 import { Link } from "react-router-dom"; // Import Link for navigation
 import GameOptionsMenu from "./gameOptionsMenu"; // Adjust the path as needed
 
-function GameBox({ handleCreateNewGame }) {
+function GameBox({ handleCreateNewGame, searchTerm }) {
   const [gameData, setGameData] = useState(null);
 
   useEffect(() => {
@@ -41,9 +41,15 @@ function GameBox({ handleCreateNewGame }) {
     return <div>Loading...</div>;
   }
 
+  const filteredGameData = gameData?.filter(
+    (game) =>
+      (game.gameTitle && game.gameTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (game.gameID && game.gameID.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) || [];
+
   return (
     <Grid style={{ width: "100%" }} container spacing={2}>
-      {gameData.map((game) => (
+      {filteredGameData.map((game) => (
         <Grid style={{ width: "100%" }} item key={game.id}>
           <Card variant="outlined">
             <CardContent
