@@ -16,7 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 import PasswordTextField from "../components/PasswordField";
 import ContinueWithGoogleButton from "../components/ContinueWithGoogleButton";
 import Loading from "../components/Loading";
-import { auth } from "../firebase/firebase";
+import { auth, firestore } from "../firebase/firebase";
 import {
   sendEmailVerification,
   signInWithEmailAndPassword,
@@ -24,6 +24,7 @@ import {
 import { signUpUser } from "../redux/slices/user";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { doc, getDoc } from "firebase/firestore";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -40,63 +41,59 @@ const LoginPage = () => {
   });
 
   const isFirstTimeLogin = async (user) => {
-    // Check if the user has a display name (first name and last name)
-    if (!user.displayName) {
-      return true; // User doesn't have a display name, so it's the first time login
-    } else {
-      // User has a display name, check if it's formatted as first name and last name
-      const displayNameParts = user.displayName.split(" ");
-      if (displayNameParts.length < 2) {
-        return true; // Display name is not formatted correctly, consider it the first time login
-      }
-    }
+    const userDocRef = doc(firestore, "UserProfiles", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
   
-    return false; // User has a properly formatted display name, not the first time login
-  };
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      return userData.isFirstTimeLogin;
+    }
+
+    return true; // Assume it's the first time if the document doesn't exist
+  };  
   
   const onSubmit = async ({ email, password }) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        // successfully logged in
-        const user = userCredential.user;
-        if (user.emailVerified === true) {
-          // we store the data in redux store
-          dispatch(
-            signUpUser({
-              email: user.email,
-              uid: user.uid,
-              providerId: user.providerId,
-            })
-          );
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      if (user.emailVerified === true) {
+        dispatch(
+          signUpUser({
+            email: user.email,
+            uid: user.uid,
+            providerId: user.providerId,
+          })
+        );
   
-          // Check if it's the first time logging in
-          if (isFirstTimeLogin(user)) {
-            navigate("/about-you", { replace: true });
-          } else {
-            navigate("/dashboard", { replace: true });
-          }
+        const firstTimeLogin = await isFirstTimeLogin(user);
+        console.log("Function Result: ", firstTimeLogin);
+        if (firstTimeLogin) {
+          navigate("/about-you", { replace: true });
         } else {
-          sendEmailVerification(user).then(() => {
-            setFormSucess(
-              "We have sent you a link to your email. Please verify your account and log in again"
-            );
-          });
+          navigate("/dashboard", { replace: true });
         }
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        if (
-          errorMessage === "Firebase: Error (auth/wrong-password)." ||
-          errorMessage === "Firebase: Error (auth/user-not-found)."
-        ) {
-          setFormError("Incorrect email or password");
-        } else {
-          setFormError(
-            "Sorry, something went wrong. Please try again or contact us if the issue persists"
+      } else {
+        sendEmailVerification(user).then(() => {
+          setFormSucess(
+            "We have sent you a link to your email. Please verify your account and log in again"
           );
-        }
-      });
+        });
+      }
+    } catch (error) {
+      const errorMessage = error.message;
+      if (
+        errorMessage === "Firebase: Error (auth/wrong-password)." ||
+        errorMessage === "Firebase: Error (auth/user-not-found)."
+      ) {
+        setFormError("Incorrect email or password");
+      } else {
+        setFormError(
+          "Sorry, something went wrong. Please try again or contact us if the issue persists"
+        );
+      }
+    }
   };
+  
   
 
   return (

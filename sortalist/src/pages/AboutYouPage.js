@@ -5,27 +5,35 @@ import { useNavigate } from "react-router-dom";
 import FieldWithSeparateLabel from "../components/FieldWithSeparateLabel";
 import { Controller, useForm } from "react-hook-form";
 import Loading from "../components/Loading";
-import { auth } from "../firebase/firebase";
-import { firestore } from "../firebase/firebase";
-
+import { auth, firestore } from "../firebase/firebase";
+import { updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; 
 
 const AboutYouPage = () => {
   const navigate = useNavigate();
-  
+
   const updateUserProfile = async ({ firstName, lastName, isFirstTimeLogin }) => {
     const user = auth.currentUser;
 
+    if (!user) {
+      console.error("User not signed in");
+      return;
+    }
+
     try {
-      await user.updateProfile({
+      await updateProfile(user, {
         displayName: `${firstName} ${lastName}`,
+        photoURL: "https://example.com/jane-q-user/profile.jpg"
       });
 
-      const userRef = firestore.collection('users').doc(user.uid);
-        await userRef.update({
-        firstName,
-        lastName,
-        isFirstTimeLogin,
-      });
+      // Add a new document in collection "UserProfiles"
+      const userRef = doc(firestore, "UserProfiles", user.uid);
+      await setDoc(userRef, {
+        firstName: firstName,
+        lastName: lastName,
+        isFirstTimeLogin: isFirstTimeLogin
+      }, { merge: true });
+      
       console.log("User profile updated successfully");
     } catch (error) {
       console.error("Error updating user profile:", error);
@@ -81,6 +89,7 @@ const AboutYouPage = () => {
                 <Controller
                   rules={{
                     required: "Required",
+                    maxLength: { value: 100, message: "Max length is 100 characters" }
                   }}
                   render={({ field, fieldState: { error } }) => (
                     <TextFieldStyled
@@ -113,6 +122,7 @@ const AboutYouPage = () => {
                 <Controller
                   rules={{
                     required: "Required",
+                    maxLength: { value: 100, message: "Max length is 100 characters" }
                   }}
                   render={({ field, fieldState: { error } }) => (
                     <TextFieldStyled
@@ -150,7 +160,6 @@ const AboutYouPage = () => {
               <Button type="submit" fullWidth variant="contained" color="primary">
                 Continue
               </Button>
-
             </Grid>
             <Grid xs={12} item mt={2} mb={5} pb={5}>
               <Divider />
