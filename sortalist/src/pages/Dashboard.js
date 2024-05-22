@@ -56,13 +56,17 @@ const DashboardPage = () => {
   };
 
   const handlePreviousStep = () => {
-    setCurrentStep(currentStep - 1);
+    if (currentStep === 1) { 
+      setCurrentStep(0);
+      setCreatingNewGame(false);
+    } else {
+      setCurrentStep((prevStep) => prevStep - 1);
+    }
   };
 
   const handleFinish = () => {
-    // Logic to handle final step (e.g., submitting data to server)
-    // You can also reset the state or redirect the user after finishing
-    console.log("Game creation finished:", gameData);
+    setCreatingNewGame(false); // Set creatingNewGame to false after finishing
+    setCurrentStep(0); // Optionally reset to the first step
   };
 
   // Render the appropriate step component based on the current step
@@ -102,8 +106,6 @@ const DashboardPage = () => {
         return (
           <FinishCreateGame
             gameData={gameData}
-            setGameData={setGameData}
-            onNext={handleNextStep}
             onFinish={handleFinish}
           />
         );

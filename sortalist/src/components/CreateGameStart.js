@@ -1,8 +1,9 @@
 // Step1.js
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => {
+const CreateGameStart = ({ gameData, setGameData, onNext, onPrevious }) => {
   const handleChange = (e) => {
     setGameData({ ...gameData, title: e.target.value });
   };
@@ -47,6 +48,8 @@ const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => 
         }}
       >
         <Box mb={3}>
+        <ArrowBackIosIcon sx={{ mb: 2 }} onClick={onPrevious} />
+
           <Typography variant="h5" fontWeight="bold" gutterBottom>
             Game Title:
           </Typography>

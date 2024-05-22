@@ -2,13 +2,14 @@ import React from "react";
 import { Box, Typography, Button, Divider } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const CreateGameFinish = ({ gameData }) => {
-  const finish = () => {
+const CreateGameFinish = ({ gameData, onFinish }) => {
+  const handleFinishClick = () => {
     console.log("Nice");
     console.log(gameData);
     console.log(gameData.gameID);
     console.log(gameData.categories);
     console.log("gameData.categories");
+    onFinish();
   };
 
   return (
@@ -35,7 +36,7 @@ const CreateGameFinish = ({ gameData }) => {
           Your game session has been created.
         </Typography>
 
-        <Box  mb={3}>
+        <Box mb={3}>
           <Typography
             style={{ color: "#1F64FF", fontWeight: "bold" }}
             variant="body1"
@@ -61,8 +62,7 @@ const CreateGameFinish = ({ gameData }) => {
 
         <Divider sx={{ my: 2, borderColor: "grey", borderWidth: 1.3 }} mb={3} />
 
-
-        <Box  mb={5}>
+        <Box mb={5}>
           <Typography
             style={{ color: "#1F64FF", fontWeight: "bold" }}
             variant="body1"
@@ -93,13 +93,17 @@ const CreateGameFinish = ({ gameData }) => {
             {/* Render the name of each category */}
           </Typography>
         ))}
-        {/* Attach the testFunction to the onClick event of the button */}
-
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            sx={{ width: "30%" }}
+            onClick={handleFinishClick}
+            mt={3}
+          >
+            Done
+          </Button>
+        </Box>
       </Box>
-
-      <Button variant="contained" onClick={finish} mt={3}>
-          Done
-        </Button>
     </Box>
   );
 };
