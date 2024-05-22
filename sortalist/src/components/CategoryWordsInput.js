@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Button, TextField, Box, Typography, Divider } from "@mui/material";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-const CategoryWordsInput = ({ index, categoryName, category, initialWords, onUpdate }) => {
-  const [words, setWords] = useState(initialWords.length > 0 ? initialWords : [""]);
+const CategoryWordsInput = ({
+  index,
+  categoryName,
+  category,
+  initialWords,
+  onUpdate,
+}) => {
+  const [words, setWords] = useState(
+    initialWords.length > 0 ? initialWords : [""]
+  );
 
   const addWord = () => {
     setWords([...words, ""]);
@@ -16,7 +24,7 @@ const CategoryWordsInput = ({ index, categoryName, category, initialWords, onUpd
   const handleChange = (index, value) => {
     const updatedWords = [...words];
     updatedWords[index] = value;
-    category.words = updatedWords
+    category.words = updatedWords;
     setWords(updatedWords);
     onUpdate(updatedWords);
   };
@@ -57,9 +65,7 @@ const CategoryWordsInput = ({ index, categoryName, category, initialWords, onUpd
       >
         + New Word
       </Typography>
-
     </Box>
-    
   );
 };
 

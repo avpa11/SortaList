@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { collection, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,3 +18,10 @@ export const Providers = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firestore = getFirestore();
 export const auth = getAuth();
+
+const createCollection = (collectionName) => {
+  return collection(firestore, collectionName);
+};
+
+// collections
+export const gamesCol = createCollection("games");

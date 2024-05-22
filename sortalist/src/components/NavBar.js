@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -19,7 +19,11 @@ import {
   Grid,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { getIsUserAuth, signOutUser } from "../redux/slices/user";
+import {
+  getIsUserAnonymous,
+  getIsUserAuth,
+  signOutUser,
+} from "../redux/slices/user";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -30,6 +34,7 @@ function NavBar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isUserAuth = useSelector(getIsUserAuth);
+  const isAnonymous = useSelector(getIsUserAnonymous);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -61,7 +66,7 @@ function NavBar() {
   };
 
   return (
-    <div>
+    <>
       <AppBar
         position="relative"
         sx={{
@@ -93,7 +98,7 @@ function NavBar() {
             onClick={() => navigate("/")}
           >
             <img
-              src="./images/logo.png"
+              src="./images/logo3.png"
               alt="SortaList Logo"
               style={{ height: "35px" }}
             />
@@ -110,14 +115,24 @@ function NavBar() {
               {/* Create the navigation bar with links to the How it works, About us and Contact pages */}
               <Typography component="div" variant="body1" color="text.primary">
                 <Box mr={5}>
-                  <MuiLink component={Link} to="/instructions" color="inherit" underline="none">
+                  <MuiLink
+                    component={Link}
+                    to="/instructions"
+                    color="inherit"
+                    underline="none"
+                  >
                     How it works
                   </MuiLink>
                 </Box>
               </Typography>
               <Typography component="div" variant="body1" color="text.primary">
                 <Box mr={5}>
-                  <MuiLink component={Link} to="/about-us" color="inherit" underline="none">
+                  <MuiLink
+                    component={Link}
+                    to="/about-us"
+                    color="inherit"
+                    underline="none"
+                  >
                     About us
                   </MuiLink>
                 </Box>
@@ -185,9 +200,11 @@ function NavBar() {
               >
                 {error && <Alert severity="error">{error}</Alert>}
 
-                <MenuItem onClick={() => navigate("/dashboard")}>
-                  Dashboard
-                </MenuItem>
+                {!isAnonymous && (
+                  <MenuItem onClick={() => navigate("/dashboard")}>
+                    Dashboard
+                  </MenuItem>
+                )}
                 <MenuItem onClick={() => logout()}>Logout</MenuItem>
               </Menu>
             </Box>
@@ -210,7 +227,7 @@ function NavBar() {
           </List>
         </Drawer>
       )}
-    </div>
+    </>
   );
 }
 

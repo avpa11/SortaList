@@ -9,13 +9,15 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getIsUserAuth } from "../redux/slices/user";
+import { getIsUserAnonymous, getIsUserAuth } from "../redux/slices/user";
 import ContinueWithGoogleButton from "../components/ContinueWithGoogleButton";
+import MotionIcon from "../components/MotionIcon";
 
 const LandingPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isUserAuth = useSelector(getIsUserAuth);
+  const isAnonymous = useSelector(getIsUserAnonymous);
 
   const navigate = useNavigate();
 
@@ -51,15 +53,27 @@ const LandingPage = () => {
               </Box>
             ) : (
               <Box mt={2} display="flex" gap={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
+                {isAnonymous ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/guest")}
+                  >
+                    Play
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Dashboard
+                  </Button>
+                )}
               </Box>
             )}
+
+            <MotionIcon />
           </Grid>
 
           <Grid item xs={12} md={8} pt={-5}>

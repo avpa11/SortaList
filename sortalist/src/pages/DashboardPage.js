@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import SideNavBar from "../components/SideNavBar";
 import GameBox from "../components/GameBox";
 import CreateGameStart from "../components/CreateGameStart";
 import FinishCreateGame from "../components/CreateGameFinish";
@@ -18,18 +17,17 @@ import Divider from "@mui/material/Divider";
 const DashboardPage = () => {
   const [currentStep, setCurrentStep] = useState(0); // Initialize current step
   const [creatingNewGame, setCreatingNewGame] = useState(false); // Define creatingNewGame state variable
-  
+
   const [gameData, setGameData] = useState({
     // Initialize empty game data object to store data collected from steps
     // Modify this object to match the structure of your game data
-    
+
     title: "",
     categories: [],
     // Add more properties as needed
   });
 
   const handleCreateNewGame = (initialGameData) => {
-
     setCurrentStep(1); // Start with Step 1 (CreateGameStart)
     setCreatingNewGame(true); // Set creatingNewGame to true when creating a new game
     if (initialGameData) {
@@ -49,8 +47,6 @@ const DashboardPage = () => {
     }
   };
 
-
-
   const handleNextStep = () => {
     setCurrentStep(currentStep + 1);
   };
@@ -60,9 +56,8 @@ const DashboardPage = () => {
   };
 
   const handleFinish = () => {
-    // Logic to handle final step (e.g., submitting data to server)
-    // You can also reset the state or redirect the user after finishing
-    console.log("Game creation finished:", gameData);
+    setGameData({ title: "", categories: [] });
+    setCreatingNewGame(false);
   };
 
   // Render the appropriate step component based on the current step
@@ -74,8 +69,7 @@ const DashboardPage = () => {
             gameData={gameData}
             setGameData={setGameData}
             onNext={handleNextStep}
-            onPrevious={handlePreviousStep}
-
+            handleFinish={handleFinish}
           />
         );
       case 2:
@@ -85,7 +79,6 @@ const DashboardPage = () => {
             setGameData={setGameData}
             onNext={handleNextStep}
             onPrevious={handlePreviousStep}
-
           />
         );
       case 3:
@@ -95,17 +88,11 @@ const DashboardPage = () => {
             setGameData={setGameData}
             onNext={handleNextStep}
             onPrevious={handlePreviousStep}
-
           />
         );
       case 4:
         return (
-          <FinishCreateGame
-            gameData={gameData}
-            setGameData={setGameData}
-            onNext={handleNextStep}
-            onFinish={handleFinish}
-          />
+          <FinishCreateGame gameData={gameData} handleFinish={handleFinish} />
         );
       default:
         return null;
@@ -130,46 +117,45 @@ const DashboardPage = () => {
       )}
 
       {!creatingNewGame && (
-          <Box mb={3}>
+        <Box mb={3}>
           <Typography variant="h5" fontWeight="bold" mb={3}>
             Games
           </Typography>
-            <Box>
-              <Typography fontWeight="bold" ml={3}>
-                Sessions
-              </Typography>
-              <Divider
-                sx={{
-                  my: 2,
-                  backgroundImage: `linear-gradient(to right, #1F64FF, #1F64FF 11%, #F5F6FA 11%)`, // Blue for the first 50%, then grey
-                  backgroundSize: "100% 2px", // Adjust height of the gradient line
-                  backgroundRepeat: "no-repeat",
-                  height: 2, // Adjust height of the divider
-                }}
-              />
-            </Box>
-
-            <Button
-              variant="contained"
-              style={{
-                backgroundColor: "#E1E2E9",
-                width: "100%",
-                color: "black",
-                fontWeight: "bold",
+          <Box>
+            <Typography fontWeight="bold" ml={3}>
+              Sessions
+            </Typography>
+            <Divider
+              sx={{
+                my: 2,
+                backgroundImage: `linear-gradient(to right, #1F64FF, #1F64FF 11%, #F5F6FA 11%)`, // Blue for the first 50%, then grey
+                backgroundSize: "100% 2px", // Adjust height of the gradient line
+                backgroundRepeat: "no-repeat",
+                height: 2, // Adjust height of the divider
               }}
-              onClick={() => handleCreateNewGame()} // Call handleCreateNewGame without initial data
-              disableElevation={true}
-            >
-              + New Game
-            </Button>
+            />
           </Box>
+
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "#E1E2E9",
+              width: "100%",
+              color: "black",
+              fontWeight: "bold",
+            }}
+            onClick={() => handleCreateNewGame()} // Call handleCreateNewGame without initial data
+            disableElevation={true}
+          >
+            + New Game
+          </Button>
+        </Box>
       )}
 
       <Box display="flex" flexDirection="column" width={"auto"}>
-        {/* <SideNavBar /> */}
         {!creatingNewGame && (
           <>
-            <GameBox handleCreateNewGame={handleCreateNewGame}/>
+            <GameBox handleCreateNewGame={handleCreateNewGame} />
           </>
         )}
         {creatingNewGame && renderStepComponent()}

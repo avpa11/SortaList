@@ -24,7 +24,7 @@ const OnboardingPage = () => {
             onClick={() => navigate("/")}
           >
             <img
-              src="./images/logo.png"
+              src="./images/logo3.png"
               alt="SortaList Logo"
               style={{ height: "35px" }}
             />

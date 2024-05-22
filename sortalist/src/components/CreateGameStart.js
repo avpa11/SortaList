@@ -1,10 +1,15 @@
 // Step1.js
 import React from "react";
-import { Button, TextField, Box, Typography } from "@mui/material";
+import { Button, TextField, Box, Typography, Grid } from "@mui/material";
+import { useTheme } from "@emotion/react";
 
-const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => {
+const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish }) => {
+  const theme = useTheme();
   const handleChange = (e) => {
     setGameData({ ...gameData, title: e.target.value });
+  };
+  const finishGameCreation = () => {
+    handleFinish();
   };
 
   const generateGameID = () => {
@@ -22,8 +27,7 @@ const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => 
     // Update gameData to include gameID as "TEST"
     const updatedGameData = {
       ...gameData,
-      gameID: "TEST",
-      uniqueID: generateGameID(),
+      gameID: generateGameID(),
     };
 
     // Set updated gameData
@@ -34,16 +38,20 @@ const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => 
   };
 
   return (
-    <Box>
+    <Grid
+      style={{ width: "100%", display: "flex", justifyContent: "center" }}
+      container
+      spacing={2}
+    >
       <Box
-        bgcolor="#F5F6FA"
+        bgcolor={theme.palette.grey[100]}
+        padding={3}
+        borderRadius={5}
+        display={"flex"}
+        flexDirection={"column"}
         sx={{
-          display: "flex",
-          flexDirection: "column",
           width: "100%",
-          minWidth: "500px",
-          padding: "50px",
-          borderRadius: "12px",
+          minWidth: "200px",
         }}
       >
         <Box mb={3}>
@@ -52,7 +60,7 @@ const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => 
           </Typography>
           <Typography
             variant="body1"
-            sx={{ fontWeight: "bold", color: "rgba(0, 0, 0, 0.5)" }}
+            sx={{ fontWeight: "bold", color: theme.palette.grey[500] }}
             gutterBottom
           >
             Select a title for your game
@@ -81,7 +89,13 @@ const CreateGameStart = ({ gameData, setGameData, onNext, initialGameData }) => 
           </Box>
         </Box>
       </Box>
-    </Box>
+
+      <Box display="flex" justifyContent="center" p={3}>
+        <Button variant="outlined" mt={3} onClick={() => finishGameCreation()}>
+          Cancel
+        </Button>
+      </Box>
+    </Grid>
   );
 };
 export default CreateGameStart;

@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import FieldWithSeparateLabel from "../components/FieldWithSeparateLabel";
 import { Controller, useForm } from "react-hook-form";
 import Loading from "../components/Loading";
-import {signInAnonymously, updateProfile } from 'firebase/auth';
+import { signInAnonymously, updateProfile } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import { signUpUser } from "../redux/slices/user";
+import { joinSession, signUpUser } from "../redux/slices/user";
 import { useDispatch } from "react-redux";
 
 const GuestLoginPage = () => {
@@ -26,26 +26,29 @@ const GuestLoginPage = () => {
     try {
       // anon sign in
       const userCredential = await signInAnonymously(auth);
-      
+
       // Firebase user credential
       const user = userCredential.user;
-  
+
       // Update the user's display name (name) if provided
       if (name) {
         await updateProfile(auth.currentUser, {
-          displayName: name
+          displayName: name,
         });
       }
 
       dispatch(
         signUpUser({
+          uid: user.uid,
+          providerId: user.providerId,
           name: user.name,
+          isAnonymous: user.isAnonymous,
         })
       );
-      navigate("/Play");
-  
+      dispatch(joinSession(sessionId));
+      navigate("/play");
     } catch (error) {
-      console.error('An error occurred during authentication:', error);
+      console.error("An error occurred during authentication:", error);
     }
   };
 
@@ -134,7 +137,12 @@ const GuestLoginPage = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Button type="submit" fullWidth variant="contained" color="primary">
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+              >
                 Play
               </Button>
             </Grid>
