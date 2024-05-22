@@ -229,7 +229,7 @@ const GamePageTemp = () => {
                             borderColor: snapshot.isDraggingOver
                               ? "secondary.main"
                               : "transparent",
-                            padding: 4,
+                            padding: 2,
                             minHeight: 250,
                             maxHeight: 250,
                             overflowY: "auto",
@@ -248,10 +248,10 @@ const GamePageTemp = () => {
                                   {...provided.dragHandleProps}
                                   sx={{
                                     userSelect: "none",
-                                    padding: 5,
+                                    padding: 2,
                                     borderRadius: 5,
                                     margin: "0 0 8px 0",
-                                    minHeight: "20px",
+                                    minHeight: "50px",
                                     backgroundColor: snapshot.isDragging
                                       ? "info.main"
                                       : "primary.main",
@@ -273,7 +273,7 @@ const GamePageTemp = () => {
               ))}
             </Grid>
           </DragDropContext>
-          <Box display="flex" justifyContent="center" gap={2}>
+          <Box display="flex" justifyContent="center" gap={2} p={5}>
             <Button
               variant="outlined"
               color="primary"

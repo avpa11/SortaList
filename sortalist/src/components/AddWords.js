@@ -96,7 +96,6 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
         ))}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
-            sx={{ width: "30%" }}
             variant="contained"
             onClick={createGame}
             startIcon={<VideogameAssetIcon />}
