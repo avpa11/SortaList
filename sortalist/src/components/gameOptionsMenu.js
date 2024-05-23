@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Menu, MenuItem  } from "@mui/material";
 import { firestore } from "../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
 import { deleteDoc, doc } from "firebase/firestore";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const GameOptionsMenu = ({ gameData, uniqueID, setGameData, handleCreateNewGame}) => {
+const GameOptionsMenu = ({ gameData, uniqueID, setGameData, handleCreateNewGame, fetchGameData}) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -20,7 +19,6 @@ const GameOptionsMenu = ({ gameData, uniqueID, setGameData, handleCreateNewGame}
   const handleCopy = () => {
     const copiedGameData = gameData
     handleCreateNewGame(copiedGameData);
-    // Handle copy action
     handleClose();
   };
 
@@ -28,8 +26,11 @@ const GameOptionsMenu = ({ gameData, uniqueID, setGameData, handleCreateNewGame}
     try {
       await deleteDoc(doc(firestore, "games", uniqueID));
       console.log("Document successfully deleted!");
+      
       // Optionally, update gameData state after deleting the document
       setGameData(gameData.filter((game) => game.id !== gameId));
+      fetchGameData();
+
     } catch (error) {
       console.error("Error deleting document:", error);
     }

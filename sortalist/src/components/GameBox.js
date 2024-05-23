@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { firestore } from "../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -17,24 +17,26 @@ function GameBox({ handleCreateNewGame }) {
       try {
         const gamesCollectionRef = collection(firestore, "games");
         const snapshot = await getDocs(gamesCollectionRef);
-        // Extract category names from each game
-
-        if (!snapshot.empty) {
-          const gamesData = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-
-          setGameData(gamesData);
-        } else {
-          console.log("No games found");
-        }
+        const initialGameData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setGameData(initialGameData);
       } catch (error) {
         console.error("Error fetching games:", error);
       }
     };
 
+    const unsubscribe = onSnapshot(collection(firestore, "games"), (snapshot) => {
+      const updatedGameData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setGameData(updatedGameData);
+    });
     fetchGameData();
+    return () => unsubscribe();
+
   }, []); // Trigger fetchGameData() whenever gameId changes
 
   if (!gameData) {
