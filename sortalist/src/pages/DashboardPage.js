@@ -12,6 +12,7 @@ import CreateGameStart from "../components/CreateGameStart";
 import FinishCreateGame from "../components/CreateGameFinish";
 import AddCategories from "../components/AddCategories";
 import AddWords from "../components/AddWords";
+import AddRankingWords from "../components/AddRankingWords";
 import Divider from "@mui/material/Divider";
 
 const DashboardPage = () => {
@@ -48,7 +49,11 @@ const DashboardPage = () => {
   };
 
   const handleNextStep = () => {
-    setCurrentStep(currentStep + 1);
+      if (gameData.gameType === "Ranking" && currentStep === 2) {
+      setCurrentStep(currentStep + 2); // Skip to the step after categories
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const handlePreviousStep = () => {
@@ -73,14 +78,26 @@ const DashboardPage = () => {
           />
         );
       case 2:
-        return (
-          <AddCategories
-            gameData={gameData}
-            setGameData={setGameData}
-            onNext={handleNextStep}
-            onPrevious={handlePreviousStep}
-          />
-        );
+        if (gameData.gameType === "Sorting") {
+          return (
+            <AddCategories
+              gameData={gameData}
+              setGameData={setGameData}
+              onNext={handleNextStep}
+              onPrevious={handlePreviousStep}
+            />
+          );
+        } else if (gameData.gameType === "Ranking") {
+          return (
+            <AddRankingWords
+              gameData={gameData}
+              setGameData={setGameData}
+              onNext={handleNextStep}
+              onPrevious={handlePreviousStep}
+            />
+          );
+        }
+        break;
       case 3:
         return (
           <AddWords

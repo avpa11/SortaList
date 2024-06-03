@@ -1,13 +1,18 @@
 // Step1.js
 import React from "react";
-import { Button, TextField, Box, Typography, Grid } from "@mui/material";
+import { Button, TextField, Box, Typography, Grid, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
-const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish }) => {
+const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish, onSortingGame  }) => {
   const theme = useTheme();
   const handleChange = (e) => {
     setGameData({ ...gameData, title: e.target.value });
   };
+
+  const handleGameTypeChange = (e) => {
+    setGameData({ ...gameData, gameType: e.target.value });
+  };
+
   const finishGameCreation = () => {
     handleFinish();
   };
@@ -75,6 +80,31 @@ const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish }) => {
             fullWidth
             sx={{ bgcolor: "white" }}
           />
+        </Box>
+
+        <Box mb={2} mt={3}>
+          <FormControl component="fieldset">
+          <FormLabel sx={{color: 'black', typography: 'h5', fontWeight: 'bold', mb: 1 }} variant="h5" fontWeight="bold" gutterBottom>
+            Game Type:
+          </FormLabel>
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: "bold", color: theme.palette.grey[500] }}
+            gutterBottom
+            mb={2}
+          >
+            Select the type of game 
+          </Typography>
+            <RadioGroup
+              aria-label="game type"
+              name="gameType"
+              value={gameData.gameType || ""}
+              onChange={handleGameTypeChange}
+            >
+              <FormControlLabel value="Sorting" control={<Radio />} label="Sorting Game" />
+              <FormControlLabel value="Ranking" control={<Radio />} label="Ranking Game" />
+            </RadioGroup>
+          </FormControl>
         </Box>
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
