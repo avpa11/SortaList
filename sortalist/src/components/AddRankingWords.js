@@ -17,6 +17,7 @@ const AddRankingWords = ({ gameData, setGameData, onNext, onPrevious }) => {
       const gamesRef = doc(gamesCol, gameData.gameID);
       await setDoc(gamesRef, {
         rankedWords: gameData.rankedWords,
+        gameType: gameData.gameType,
         gameTitle: gameData.title,
         creatorID: userID,
         gameID: gameData.gameID,

@@ -18,6 +18,7 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
       await setDoc(gamesRef, {
         categories: gameData.categories,
         gameTitle: gameData.title,
+        gameType: gameData.gameType,
         creatorID: userID,
         gameID: gameData.gameID,
         timestamp: serverTimestamp(),
