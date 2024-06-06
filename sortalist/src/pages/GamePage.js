@@ -1,257 +1,388 @@
-import React, { useState } from "react";
-import { Button, IconButton } from "@mui/material";
-import { Refresh, ArrowBack, ArrowForward } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserGameSession, joinSession } from "../redux/slices/user";
+import { forwardRef, useEffect, useState } from "react";
+import { auth, gamesCol, gameResultsCol } from "../firebase/firebase";
+import { addDoc, doc, getDoc } from "firebase/firestore";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Slide,
+  Typography,
+} from "@mui/material";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { WhiteCardBox } from "../components/styled";
+import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 
-const initialTaskStatus = {
-  scattered: [
-    { id: "1", word: "Bananas", desc: "Bananas are high in potassium", position: { top: "10%", left: "30%" } },
-    { id: "2", word: "Oranges", desc: "Oranges are good for vitamin C", position: { top: "10%", left: "20%" } },
-    { id: "3", word: "Potatoes", desc: "Potatoes are good carbs", position: { top: "20%", left: "25%" } },
-    { id: "4", word: "Eggplant", desc: "Eggplant is underrated", position: { top: "20%", left: "30%" } },
-    { id: "5", word: "Tomatoes", desc: "Tomatoes come in all shapes and sizes", position: { top: "30%", left: "25%" } },
-    { id: "6", word: "Apples", desc: "Keeps the doctor away", position: { top: "30%", left: "15%" } },
-    { id: "7", word: "Blueberries", desc: "Blueberries are not blackberries", position: { top: "40%", left: "30%" } },
-  ],
-  fruits: [],
-  veggies: [],
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const onDragEnd = (result, columns, setColumns) => {
+  if (!result.destination) return;
+  const { source, destination } = result;
+  if (source.droppableId !== destination.droppableId) {
+    const sourceColumn = columns[source.droppableId];
+    const destColumn = columns[destination.droppableId];
+    const sourceItems = [...sourceColumn.items];
+    const destItems = [...destColumn.items];
+    const [removed] = sourceItems.splice(source.index, 1);
+    destItems.splice(destination.index, 0, removed);
+    setColumns({
+      ...columns,
+      [source.droppableId]: {
+        ...sourceColumn,
+        items: sourceItems,
+      },
+      [destination.droppableId]: {
+        ...destColumn,
+        items: destItems,
+      },
+    });
+  } else {
+    const column = columns[source.droppableId];
+    const copiedItems = [...column.items];
+    const [removed] = copiedItems.splice(source.index, 1);
+    copiedItems.splice(destination.index, 0, removed);
+    setColumns({
+      ...columns,
+      [source.droppableId]: {
+        ...column,
+        items: copiedItems,
+      },
+    });
+  }
 };
 
-const Card = ({ id, text, index, moveCard, position, desc, handleSwipeLeft, handleSwipeRight }) => {
-  const [flipped, setFlipped] = useState(false);
-
-  const handleFlip = () => {
-    setFlipped(!flipped);
-  };
-
-  return (
-    <div
-      onClick={handleFlip}
-      style={{
-        width: "100px",
-        height: "150px",
-        margin: "10px",
-        padding: "10px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        backgroundColor: flipped ? "royalBlue" : "Blue",
-        color: "white",
-        fontFamily: "Comic Sans MS, sans-serif",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        position: "absolute",
-        top: position.top,
-        left: position.left,
-        transform: `rotate(${Math.random() * 30 - 15}deg)`,
-        transition: "top 0.5s, left 0.5s, transform 0.5s, background-color 0.5s",
-      }}
-    >
-      <div style={{ transform: `rotate(${Math.random() * 10 - 5}deg)` }}>
-        {flipped ? desc : text}
-      </div>
-    </div>
-  );
+const saveAnswersToFirestore = async (user, sessionId, answers) => {
+  try {
+    const resultRef = doc(gameResultsCol, sessionId);
+    await addDoc(resultRef, {
+      uid: user.uid,
+      answers: answers
+    });
+    console.log("Answers saved successfully!");
+  } catch (error) {
+    console.error("Error saving answers: ", error);
+  }
 };
 
 const GamePage = () => {
-  const [columns, setColumns] = useState(initialTaskStatus);
+  const user = auth.currentUser;
+  const userSessionId = useSelector(getUserGameSession);
+  const [game, setGame] = useState();
+  const [columns, setColumns] = useState({});
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [differences, setDifferences] = useState([]);
 
-  const moveCard = (fromIndex, fromArray, toArray, toLeft, toTop) => {
-    const movedItem = columns[fromArray][fromIndex];
+  useEffect(() => {
+    const fetchGame = async () => {
+      if (userSessionId) {
+        const gameRef = doc(gamesCol, userSessionId);
+        const docSnap = await getDoc(gameRef);
+        if (docSnap.exists()) {
+          setGame(docSnap.data());
+        } else {
+          console.log("The game with the provided session ID does not exist.");
+        }
+      }
+    };
 
-    // Remove the item from the original array
-    const updatedFromArray = columns[fromArray].filter((_, idx) => idx !== fromIndex);
+    fetchGame();
+  }, [userSessionId]);
 
-    // Add the item to the target array with updated position
-    const updatedToArray = [
-      ...columns[toArray],
-      { ...movedItem, position: { top: `${toTop}%`, left: `${toLeft}%` } },
-    ];
+  useEffect(() => {
+    if (game) {
+      const allWords = game.categories.flatMap((category) => category.words);
 
-    setColumns({
-      ...columns,
-      [fromArray]: updatedFromArray,
-      [toArray]: updatedToArray,
+      const initialColumns = {
+        column1: {
+          name: "Sort the words",
+          items: allWords,
+        },
+      };
+
+      // Add categories as columns
+      game.categories.forEach((category, index) => {
+        initialColumns[`column${index + 2}`] = {
+          name: category.name,
+          items: [],
+        };
+      });
+
+      setColumns(initialColumns);
+    }
+  }, [game]);
+
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+
+  const handleLeaveDialogOpen = () => {
+    setOpenLeaveDialog(true);
+  };
+
+  const handleLeaveDialogClose = () => {
+    setOpenLeaveDialog(false);
+  };
+
+  const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
+
+  const handleAnswerDialogOpen = async () => {
+    const columnsToCompare = Object.values(columns)
+      .filter((column) => column.name !== "Sort the words")
+      .map((column) => ({
+        name: column.name,
+        words: column.items.sort(),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const normalizedCategories = normalizeStructure(game.categories);
+
+    const differences = findDifferences(columnsToCompare, normalizedCategories);
+    setDifferences(differences);
+
+    // Save answers to Firestore
+    await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
+
+    setOpenAnswerDialog(true);
+  };
+
+  const handleAnswerDialogClose = () => {
+    setOpenAnswerDialog(false);
+  };
+
+  const leaveSession = () => {
+    dispatch(joinSession(null));
+    navigate("/guest");
+  };
+
+  const normalizeStructure = (structure) => {
+    if (structure) {
+      return structure
+        .map((category) => ({
+          name: category.name,
+          words: category.words.sort(),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+  };
+
+  // Function to find differences
+  const findDifferences = (columns, categories) => {
+    const differences = [];
+
+    columns.forEach((column, index) => {
+      const category = categories.find((cat) => cat.name === column.name);
+      if (category) {
+        const missingWords = category.words.filter(
+          (word) => !column.words.includes(word)
+        );
+        const extraWords = column.words.filter(
+          (word) => !category.words.includes(word)
+        );
+
+        if (missingWords.length > 0 || extraWords.length > 0) {
+          differences.push({
+            column: column.name,
+            missingWords,
+            extraWords,
+          });
+        }
+      } else {
+        differences.push({
+          column: column.name,
+          missingWords: [],
+          extraWords: column.words,
+        });
+      }
     });
-  };
 
-  const handleSwipeLeft = (index, position) => {
-    moveCard(index, "scattered", "fruits", 10, 10);
-  };
+    categories.forEach((category) => {
+      if (!columns.find((col) => col.name === category.name)) {
+        differences.push({
+          column: category.name,
+          missingWords: category.words,
+          extraWords: [],
+        });
+      }
+    });
 
-  const handleSwipeRight = (index, position) => {
-    moveCard(index, "scattered", "veggies", 10, 10);
-  };
-
-  const resetPosition = () => {
-    setColumns(initialTaskStatus);
+    return differences;
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", height: "50vh", position: "relative", padding: "20px" }}>
-      <div
-        id="left-container"
-        style={{
-          width: "30%",
-          height: "30%",
-          margin: "10px",
-          padding: "150px",
-          backgroundColor: "lightblue",
-          border: "1px solid #ccc",
-          borderRadius: "10px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {columns.fruits.map((item, index) => (
-          <Card
-            key={item.id}
-            id={item.id}
-            text={item.word}
-            index={index}
-            moveCard={moveCard}
-            position={item.position}
-            desc={item.desc}
-            handleSwipeLeft={() => handleSwipeLeft(index, item.position)}
-            handleSwipeRight={() => handleSwipeRight(index, item.position)}
-          />
-        ))}
-        <p style={{
-            margin: 0,
-            fontFamily: "sans-serif",
-            color: "white",
-            fontWeight: "bolder",
-            position: "absolute",
-            bottom: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}>FRUITS</p>
-      </div>
-      <div
-        style={{
-          width: "30%",
-          height: "30%",
-          margin: "10px",
-          padding: "150px",
-          borderRadius: "10px",
-          position: "relative",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* Middle Container */}
-        {columns.scattered.map((item, index) => (
-          <Card
-            key={item.id}
-            id={item.id}
-            text={item.word}
-            index={index}
-            moveCard={moveCard}
-            position={item.position}
-            desc={item.desc}
-            handleSwipeLeft={() => handleSwipeLeft(index, item.position)}
-            handleSwipeRight={() => handleSwipeRight(index, item.position)}
-          />
-        ))}
-        <div
-          style={{
-            width: "100%",
-            position: "absolute",
-            bottom: 0,
-            textAlign: "center",
-          }}
-        >
-          <IconButton
-            onClick={() => columns.scattered.forEach((item, index) => handleSwipeLeft(index, item.position))}
-            color="primary"
-            aria-label="swipe left"
-            style={{ width: "50%", padding: 10, margin: "auto" }}
+    <Box>
+      {game && (
+        <>
+          <Typography variant="h2" textAlign={"center"}>
+            {game.gameTitle}
+          </Typography>
+          <DragDropContext
+            onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
           >
-            <ArrowBack />
-          </IconButton>
-          <IconButton
-            onClick={() => columns.scattered.forEach((item, index) => handleSwipeRight(index, item.position))}
-            color="primary"
-            aria-label="swipe right"
-            style={{ width: "50%", padding: 10, margin: "auto" }}
-          >
-            <ArrowForward />
-          </IconButton>
-          <IconButton
-            onClick={resetPosition}
-            color="primary"
-            aria-label="reset"
-            style={{ width: "50%", padding: 10, margin: "auto" }}
-          >
-            <Refresh />
-          </IconButton>
-        </div>
-      </div>
-      <div
-        id="right-container"
-        style={{
-          width: "30%",
-          height: "30%",
-          margin: "10px",
-          padding: "150px",
-          backgroundColor: "lightgreen",
-          border: "1px solid #ccc",
-          borderRadius: "10px",
-          position: "relative",
-          overflow: "hidden",
-        }}
+            <Grid container p={5} spacing={2} justifyContent="center">
+              {Object.entries(columns).map(([columnId, column], index) => (
+                <Grid item xs={12} md={6} lg={4} key={columnId}>
+                  <WhiteCardBox>
+                    <Typography variant="h6" align="center">
+                      {column.name}
+                    </Typography>
+                    <Droppable droppableId={columnId} key={columnId}>
+                      {(provided, snapshot) => (
+                        <Box
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          sx={{
+                            border: `2px dashed ${theme.palette.primary.main}`,
+                            borderColor: snapshot.isDraggingOver
+                              ? "secondary.main"
+                              : "transparent",
+                            padding: 2,
+                            minHeight: 250,
+                            maxHeight: 250,
+                            overflowY: "auto",
+                          }}
+                        >
+                          {column.items.map((item, index) => (
+                            <Draggable
+                              key={item}
+                              draggableId={item}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <Box
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  sx={{
+                                    userSelect: "none",
+                                    padding: 2,
+                                    borderRadius: 5,
+                                    margin: "0 0 8px 0",
+                                    minHeight: "50px",
+                                    backgroundColor: snapshot.isDragging
+                                      ? "info.main"
+                                      : "primary.main",
+                                    color: "white",
+                                    ...provided.draggableProps.style,
+                                  }}
+                                >
+                                  {item}
+                                </Box>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </Box>
+                      )}
+                    </Droppable>
+                  </WhiteCardBox>
+                </Grid>
+              ))}
+            </Grid>
+          </DragDropContext>
+          <Box display="flex" justifyContent="center" gap={2} p={5}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleLeaveDialogOpen}
+            >
+              Leave
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAnswerDialogOpen}
+            >
+              Check my answers
+            </Button>
+          </Box>
+        </>
+      )}
+
+      <Dialog
+        open={openLeaveDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleLeaveDialogClose}
+        aria-describedby="alert-dialog-slide-description"
       >
-        {columns.veggies.map((item, index) => (
-          <Card
-            key={item.id}
-            id={item.id}
-            text={item.word}
-            index={index}
-            moveCard={moveCard}
-            position={item.position}
-            desc={item.desc}
-            handleSwipeLeft={() => handleSwipeLeft(index, item.position)}
-            handleSwipeRight={() => handleSwipeRight(index, item.position)}
-          />
-        ))}
-        <p style={{
-            margin: 0,
-            fontFamily: "sans-serif",
-            color: "white",
-            fontWeight: "bolder",
-            position: "absolute",
-            bottom: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-          }}>VEGGIES</p>
-      </div>
-      <div
-        style={{
-          width: "15%",
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)",
-          bottom: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
+        <DialogTitle>Are you leaving?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to leave the current game session?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLeaveDialogClose}>Cancel</Button>
+          <Button variant="contained" onClick={() => leaveSession()}>
+            Leave
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openAnswerDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleAnswerDialogClose}
+        aria-describedby="alert-dialog-answers-description"
       >
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          style={{ width: "100%", padding: 10, margin: "auto" }}
-        >
-          Submit
-        </Button>
-      </div>
-    </div>
+        <DialogTitle>Your answers</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-answers-description">
+            {differences.length > 0 ? (
+              <>
+                <Typography variant="h6">You are incorrect 😢</Typography>
+                <List>
+                  {differences.map((diff, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={`Column: ${diff.column}`}
+                        secondary={
+                          <>
+                            {diff.missingWords.length > 0 && (
+                              <div>
+                                Missing words: {diff.missingWords.join(", ")}
+                              </div>
+                            )}
+                            {diff.extraWords.length > 0 && (
+                              <div>
+                                Extra words: {diff.extraWords.join(", ")}
+                              </div>
+                            )}
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            ) : (
+              <Typography variant="h6">
+                You are correct! Congratulations! 🎉🎉🎉
+              </Typography>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAnswerDialogClose}>Cancel</Button>
+          <Button variant="contained" onClick={() => leaveSession()}>
+            Leave the session
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

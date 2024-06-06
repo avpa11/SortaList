@@ -25,3 +25,4 @@ const createCollection = (collectionName) => {
 
 // collections
 export const gamesCol = createCollection("games");
+export const gameResultsCol = createCollection("gameResults");

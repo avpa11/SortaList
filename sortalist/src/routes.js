@@ -14,9 +14,8 @@ import InstructionsPage from "./pages/InstructionsPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import TopBarLayout from "./components/layouts/NavBarWithContentLayout";
 import AboutYouPage from "./pages/AboutYouPage";
-// import GamePage from "./pages/GamePage";
+import GamePage from "./pages/GamePage";
 import SideBarWithContentLayout from "./components/layouts/SideBarWithContentLayout";
-import GamePageTemp from "./pages/GamePageTemp";
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -92,7 +91,6 @@ const AppRoutes = () => {
         >
           <Route path="/guest" element={<GuestLoginPage />} />
           <Route path="/about-you" element={<AboutYouPage />} />
-          {/* <Route path="/play" element={<GamePage />} /> */}
         </Route>
 
         <Route element={<TopBarLayout />}>
@@ -121,7 +119,7 @@ const AppRoutes = () => {
               />
             }
           >
-            <Route path="/play" element={<GamePageTemp />} />
+            <Route path="/play" element={<GamePage />} />
           </Route>
         )}
       </Routes>
