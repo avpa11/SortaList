@@ -34,7 +34,7 @@ const DashboardPage = () => {
       // If initialGameData is provided, initialize gameData with it
       setGameData({
         title: initialGameData.gameTitle || "", // Set title from initialGameData or empty string if not provided
-        categories: initialGameData.gameCategories || [], // Set categories from initialGameData or empty array if not provided
+        categories: initialGameData.categories || [], // Set categories from initialGameData or empty array if not provided
         // Add more properties as needed
       });
     } else {
