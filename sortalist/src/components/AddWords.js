@@ -20,6 +20,9 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
         gameTitle: gameData.title,
         creatorID: userID,
         gameID: gameData.gameID,
+        revealAnswers: gameData.revealAnswers,
+        allowMultipleSubmissions: gameData.allowMultipleSubmissions,
+        timeLimit: gameData.timeLimit,
         timestamp: serverTimestamp(),
       });
       console.log("Game data written to the database successfully!");

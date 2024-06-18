@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserGameSession, joinSession } from "../redux/slices/user";
 import { forwardRef, useEffect, useState } from "react";
 import { auth, gamesCol, gameResultsCol } from "../firebase/firebase";
-import { addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, doc, getDoc } from "firebase/firestore";
 import {
   Box,
   Button,
@@ -65,11 +65,10 @@ const onDragEnd = (result, columns, setColumns) => {
 
 const saveAnswersToFirestore = async (user, sessionId, answers) => {
   try {
-    await addDoc(gameResultsCol, {
+    const resultRef = doc(gameResultsCol, sessionId);
+    await addDoc(resultRef, {
       uid: user.uid,
-      sessionId,
-      answers,
-      timestamp: serverTimestamp(),
+      answers: answers
     });
     console.log("Answers saved successfully!");
   } catch (error) {
@@ -86,10 +85,6 @@ const GamePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [differences, setDifferences] = useState([]);
-  const [timer, setTimer] = useState(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
-  const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -127,33 +122,22 @@ const GamePage = () => {
       });
 
       setColumns(initialColumns);
-
-      // Start timer if timeLimit is set
-      if (game.timeLimit && game.timeLimit > 0) {
-        setTimer(game.timeLimit * 60); // Convert minutes to seconds
-      }
     }
   }, [game]);
 
-  useEffect(() => {
-    let timerInterval;
-    if (timer !== null && timer > 0) {
-      timerInterval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-    } else if (timer === 0) {
-      handleTimeUp();
-    }
-    return () => clearInterval(timerInterval);
-  }, [timer]);
+  const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 
-  const handleTimeUp = () => {
-    handleAnswerDialogOpen();
+  const handleLeaveDialogOpen = () => {
+    setOpenLeaveDialog(true);
   };
 
-  const handleAnswerDialogOpen = async () => {
-    if (isSubmitted && !game.allowMultipleSubmissions) return;
+  const handleLeaveDialogClose = () => {
+    setOpenLeaveDialog(false);
+  };
 
+  const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
+
+  const handleAnswerDialogOpen = async () => {
     const columnsToCompare = Object.values(columns)
       .filter((column) => column.name !== "Sort the words")
       .map((column) => ({
@@ -170,20 +154,11 @@ const GamePage = () => {
     // Save answers to Firestore
     await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
 
-    setIsSubmitted(true);
     setOpenAnswerDialog(true);
   };
 
   const handleAnswerDialogClose = () => {
     setOpenAnswerDialog(false);
-  };
-
-  const handleLeaveDialogOpen = () => {
-    setOpenLeaveDialog(true);
-  };
-
-  const handleLeaveDialogClose = () => {
-    setOpenLeaveDialog(false);
   };
 
   const leaveSession = () => {
@@ -252,12 +227,6 @@ const GamePage = () => {
           <Typography variant="h2" textAlign={"center"}>
             {game.gameTitle}
           </Typography>
-          {timer !== null && (
-            <Typography variant="h6" textAlign={"center"}>
-              Time remaining: {Math.floor(timer / 60)}:
-              {(timer % 60).toString().padStart(2, "0")}
-            </Typography>
-          )}
           <DragDropContext
             onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
           >
@@ -334,7 +303,6 @@ const GamePage = () => {
               variant="contained"
               color="primary"
               onClick={handleAnswerDialogOpen}
-              disabled={isSubmitted && !game.allowMultipleSubmissions}
             >
               Check my answers
             </Button>
@@ -376,31 +344,29 @@ const GamePage = () => {
             {differences.length > 0 ? (
               <>
                 <Typography variant="h6">You are incorrect 😢</Typography>
-                {game.revealAnswers && (
-                  <List>
-                    {differences.map((diff, index) => (
-                      <ListItem key={index}>
-                        <ListItemText
-                          primary={`Column: ${diff.column}`}
-                          secondary={
-                            <>
-                              {diff.missingWords.length > 0 && (
-                                <div>
-                                  Missing words: {diff.missingWords.join(", ")}
-                                </div>
-                              )}
-                              {diff.extraWords.length > 0 && (
-                                <div>
-                                  Extra words: {diff.extraWords.join(", ")}
-                                </div>
-                              )}
-                            </>
-                          }
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
+                <List>
+                  {differences.map((diff, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={`Column: ${diff.column}`}
+                        secondary={
+                          <>
+                            {diff.missingWords.length > 0 && (
+                              <div>
+                                Missing words: {diff.missingWords.join(", ")}
+                              </div>
+                            )}
+                            {diff.extraWords.length > 0 && (
+                              <div>
+                                Extra words: {diff.extraWords.join(", ")}
+                              </div>
+                            )}
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
               </>
             ) : (
               <Typography variant="h6">
@@ -421,4 +387,3 @@ const GamePage = () => {
 };
 
 export default GamePage;
-

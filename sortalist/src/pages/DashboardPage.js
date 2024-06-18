@@ -24,6 +24,9 @@ const DashboardPage = () => {
 
     title: "",
     categories: [],
+    revealAnswers: false,
+    allowMultipleSubmissions: false,
+    timeLimit: 0, // in minutes
     // Add more properties as needed
   });
 
@@ -35,6 +38,9 @@ const DashboardPage = () => {
       setGameData({
         title: initialGameData.gameTitle || "", // Set title from initialGameData or empty string if not provided
         categories: initialGameData.categories || [], // Set categories from initialGameData or empty array if not provided
+        revealAnswers: initialGameData.revealAnswers || false,
+        allowMultipleSubmissions: initialGameData.allowMultipleSubmissions || false,
+        timeLimit: initialGameData.timeLimit || '',
         // Add more properties as needed
       });
     } else {
@@ -42,6 +48,9 @@ const DashboardPage = () => {
       setGameData({
         title: "",
         categories: [],
+        revealAnswers: false,
+        allowMultipleSubmissions: false,
+        timeLimit: '',
         // Add more properties as needed
       });
     }

@@ -1,6 +1,6 @@
 // Step1.js
 import React from "react";
-import { Button, TextField, Box, Typography, Grid } from "@mui/material";
+import { Button, TextField, Box, Typography, Grid, FormControlLabel, Checkbox } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish }) => {
@@ -74,6 +74,49 @@ const CreateGameStart = ({ gameData, setGameData, onNext, handleFinish }) => {
             onChange={handleChange}
             fullWidth
             sx={{ bgcolor: "white" }}
+          />
+        </Box>
+        
+        {/* New Game Configuration Options */}
+        <Box mb={2}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={gameData.revealAnswers}
+                onChange={(e) =>
+                  setGameData({ ...gameData, revealAnswers: e.target.checked })
+                }
+              />
+            }
+            label="Reveal correct answers to users on submission"
+          />
+        </Box>
+
+        <Box mb={2}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={gameData.allowMultipleSubmissions}
+                onChange={e => setGameData({ ...gameData, allowMultipleSubmissions: e.target.checked })}
+              />
+            }
+            label="Allow submitting results multiple times"
+          />
+        </Box>
+
+        <Box mb={2}>
+          <TextField
+            label="Time Limit (minutes) - leave blank for no limit"
+            type="number"
+            variant="outlined"
+            value={gameData.timeLimit}
+            onChange={e => {
+              const newTimeLimit = e.target.value;
+              setGameData({ ...gameData, 
+              timeLimit: newTimeLimit === '' ? null : Math.max(0, parseInt(newTimeLimit, 10))
+              });
+            }}
+            fullWidth
           />
         </Box>
 
