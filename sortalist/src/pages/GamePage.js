@@ -22,6 +22,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { WhiteCardBox } from "../components/styled";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import RankingGameComponent from "../components/RankingGameComponent";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -108,7 +109,7 @@ const GamePage = () => {
   }, [userSessionId]);
 
   useEffect(() => {
-    if (game) {
+    if (game && game.gameType === "Sorting") {
       const allWords = game.categories.flatMap((category) => category.words);
 
       const initialColumns = {
@@ -155,6 +156,7 @@ const GamePage = () => {
 
   const handleAnswerDialogOpen = async () => {
     if (isSubmitted && !game.allowMultipleSubmissions) return;
+    if (game.gameType === "Sorting") {
 
     const columnsToCompare = Object.values(columns)
       .filter((column) => column.name !== "Sort the words")
@@ -171,7 +173,9 @@ const GamePage = () => {
 
     // Save answers to Firestore
     await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
+    setOpenAnswerDialog(true);
 
+  } 
     setIsSubmitted(true);
     
     setOpenAnswerDialog(true);    
@@ -258,12 +262,16 @@ const GamePage = () => {
           <Typography variant="h2" textAlign={"center"}>
             {game.gameTitle}
           </Typography>
+          
           {timer !== null && (
             <Typography variant="h6" textAlign={"center"}>
               Time remaining: {Math.floor(timer / 60)}:
               {(timer % 60).toString().padStart(2, "0")}
             </Typography>
           )}
+            {game.gameType === "Ranking" ? (
+            <RankingGameComponent game={game} />
+          ) : (
           <DragDropContext
             onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
           >
@@ -291,11 +299,8 @@ const GamePage = () => {
                           }}
                         >
                           {column.items.map((item, index) => (
-                            <Draggable
-                              key={item}
-                              draggableId={item}
-                              index={index}
-                            >
+                <Draggable key={`${item}-${index}`} draggableId={`${item}-${index}`} index={index}>
+
                               {(provided, snapshot) => (
                                 <Box
                                   ref={provided.innerRef}
@@ -327,7 +332,9 @@ const GamePage = () => {
                 </Grid>
               ))}
             </Grid>
-          </DragDropContext>
+          </DragDropContext> 
+        )}
+
           <Box display="flex" justifyContent="center" gap={2} p={5}>
             <Button
               variant="outlined"
@@ -342,8 +349,9 @@ const GamePage = () => {
               onClick={handleAnswerDialogOpen}
               disabled={isSubmitted && !game.allowMultipleSubmissions}
             >
-              Check my answers
-            </Button>
+              {game.gameType === "Sorting"
+                ? "Check my answers"
+                : "Submit ranking"}            </Button>
           </Box>
         </>
       )}

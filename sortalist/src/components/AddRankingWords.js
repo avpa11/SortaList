@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Box, Typography, Divider, Grid } from "@mui/material";
-import CategoryWordsInput from "./CategoryWordsInput";
+import { Button, Box, Typography, Grid } from "@mui/material";
+import RankingWordsInput from "./RankingWordsInput";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import { gamesCol } from "../firebase/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -9,21 +9,18 @@ import { getUserID } from "../redux/slices/user";
 import { useSelector } from "react-redux";
 import { useTheme } from "@emotion/react";
 
-const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
+const AddRankingWords = ({ gameData, setGameData, onNext, onPrevious }) => {
   const userID = useSelector(getUserID);
   const theme = useTheme();
-  const createGame = async () => {
+  const createRankingGame = async () => {
     try {
       const gamesRef = doc(gamesCol, gameData.gameID);
       await setDoc(gamesRef, {
-        categories: gameData.categories,
-        gameTitle: gameData.title,
+        rankedWords: gameData.rankedWords,
         gameType: gameData.gameType,
+        gameTitle: gameData.title,
         creatorID: userID,
         gameID: gameData.gameID,
-        revealAnswers: gameData.revealAnswers,
-        allowMultipleSubmissions: gameData.allowMultipleSubmissions,
-        timeLimit: gameData.timeLimit,
         timestamp: serverTimestamp(),
       });
       console.log("Game data written to the database successfully!");
@@ -33,13 +30,10 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
     onNext();
   };
 
-  const handleUpdateWords = (category, updatedWords) => {
+  const handleUpdateWords = (updatedWords) => {
     setGameData((prevGameData) => ({
       ...prevGameData,
-      [category.name]: {
-        ...prevGameData[category.name], // Preserve other properties of the category
-        words: updatedWords,
-      },
+      rankedWords: updatedWords,
     }));
   };
 
@@ -65,43 +59,27 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
 
         <Box mb={3}>
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            Words:
+            Ranked Items
           </Typography>
           <Typography
             variant="body1"
             sx={{ fontWeight: "bold", color: theme.palette.grey[500] }}
             gutterBottom
           >
-            Add words relating to each category.
+            Add Items to be ranked.
           </Typography>
         </Box>
 
-        {gameData.categories.map((category, index) => (
-          <Box key={index}>
-            <CategoryWordsInput
-              index={index}
-              categoryName={category.name}
-              category={category}
-              initialWords={category.words || []}
-              onUpdate={(updatedWords) =>
-                handleUpdateWords(category, updatedWords)
-              }
+          <Box >
+            <RankingWordsInput
+              initialWords={gameData.rankedWords || []}
+              onUpdate={handleUpdateWords}
             />
-            {index < gameData.categories.length - 1 && (
-              <Divider
-                sx={{
-                  my: 2,
-                  borderColor: theme.palette.grey[300],
-                  borderWidth: 1.3,
-                }}
-              />
-            )}
           </Box>
-        ))}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant="contained"
-            onClick={createGame}
+            onClick={createRankingGame}
             startIcon={<VideogameAssetIcon />}
           >
             Create Game
@@ -112,4 +90,4 @@ const AddWords = ({ gameData, setGameData, onNext, onPrevious }) => {
   );
 };
 
-export default AddWords;
+export default AddRankingWords;

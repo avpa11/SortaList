@@ -22,6 +22,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { WhiteCardBox } from "../components/styled";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import RankingGameComponent from "../components/RankingGameComponent";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -103,7 +104,7 @@ const GamePage = () => {
   }, [userSessionId]);
 
   useEffect(() => {
-    if (game) {
+    if (game && game.gameType === "Sorting") {
       const allWords = game.categories.flatMap((category) => category.words);
 
       const initialColumns = {
@@ -137,8 +138,9 @@ const GamePage = () => {
 
   const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
 
-  const handleAnswerDialogOpen = async () => {
-    const columnsToCompare = Object.values(columns)
+  const handleAnswerDialogOpen = async () => { 
+    if (game.gameType === "Sorting") {
+      const columnsToCompare = Object.values(columns)
       .filter((column) => column.name !== "Sort the words")
       .map((column) => ({
         name: column.name,
@@ -155,6 +157,10 @@ const GamePage = () => {
     await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
 
     setOpenAnswerDialog(true);
+    } else{
+      setOpenAnswerDialog(true);
+    }
+
   };
 
   const handleAnswerDialogClose = () => {
@@ -227,70 +233,75 @@ const GamePage = () => {
           <Typography variant="h2" textAlign={"center"}>
             {game.gameTitle}
           </Typography>
-          <DragDropContext
-            onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-          >
-            <Grid container p={5} spacing={2} justifyContent="center">
-              {Object.entries(columns).map(([columnId, column], index) => (
-                <Grid item xs={12} md={6} lg={4} key={columnId}>
-                  <WhiteCardBox>
-                    <Typography variant="h6" align="center">
-                      {column.name}
-                    </Typography>
-                    <Droppable droppableId={columnId} key={columnId}>
-                      {(provided, snapshot) => (
-                        <Box
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          sx={{
-                            border: `2px dashed ${theme.palette.primary.main}`,
-                            borderColor: snapshot.isDraggingOver
-                              ? "secondary.main"
-                              : "transparent",
-                            padding: 2,
-                            minHeight: 250,
-                            maxHeight: 250,
-                            overflowY: "auto",
-                          }}
-                        >
-                          {column.items.map((item, index) => (
-                            <Draggable
-                              key={item}
-                              draggableId={item}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <Box
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  sx={{
-                                    userSelect: "none",
-                                    padding: 2,
-                                    borderRadius: 5,
-                                    margin: "0 0 8px 0",
-                                    minHeight: "50px",
-                                    backgroundColor: snapshot.isDragging
-                                      ? "info.main"
-                                      : "primary.main",
-                                    color: "white",
-                                    ...provided.draggableProps.style,
-                                  }}
-                                >
-                                  {item}
-                                </Box>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </Box>
-                      )}
-                    </Droppable>
-                  </WhiteCardBox>
-                </Grid>
-              ))}
-            </Grid>
-          </DragDropContext>
+          {game.gameType === "Ranking" ? (
+            <RankingGameComponent game={game} />
+          ) : (
+            <DragDropContext
+              onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+            >
+              <Grid container p={5} spacing={2} justifyContent="center">
+                {Object.entries(columns).map(([columnId, column], index) => (
+                  <Grid item xs={12} md={6} lg={4} key={columnId}>
+                    <WhiteCardBox>
+                      <Typography variant="h6" align="center">
+                        {column.name}
+                      </Typography>
+                      <Droppable droppableId={columnId} key={columnId}>
+                        {(provided, snapshot) => (
+                          <Box
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            sx={{
+                              border: `2px dashed ${theme.palette.primary.main}`,
+                              borderColor: snapshot.isDraggingOver
+                                ? "secondary.main"
+                                : "transparent",
+                              padding: 2,
+                              minHeight: 250,
+                              maxHeight: 250,
+                              overflowY: "auto",
+                            }}
+                          >
+                            {column.items.map((item, index) => (
+                              <Draggable
+                                key={item}
+                                draggableId={item}
+                                index={index}
+                              >
+                                {(provided, snapshot) => (
+                                  <Box
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    sx={{
+                                      userSelect: "none",
+                                      padding: 2,
+                                      borderRadius: 5,
+                                      margin: "0 0 8px 0",
+                                      minHeight: "50px",
+                                      backgroundColor: snapshot.isDragging
+                                        ? "info.main"
+                                        : "primary.main",
+                                      color: "white",
+                                      ...provided.draggableProps.style,
+                                    }}
+                                  >
+                                    {item}
+                                  </Box>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </Box>
+                        )}
+                      </Droppable>
+                    </WhiteCardBox>
+                  </Grid>
+                ))}
+              </Grid>
+            </DragDropContext>
+          )}
+
           <Box display="flex" justifyContent="center" gap={2} p={5}>
             <Button
               variant="outlined"
@@ -304,7 +315,9 @@ const GamePage = () => {
               color="primary"
               onClick={handleAnswerDialogOpen}
             >
-              Check my answers
+              {game.gameType === "Sorting"
+                ? "Check my answers"
+                : "Submit ranking"}
             </Button>
           </Box>
         </>
@@ -331,57 +344,62 @@ const GamePage = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openAnswerDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleAnswerDialogClose}
-        aria-describedby="alert-dialog-answers-description"
-      >
-        <DialogTitle>Your answers</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-answers-description">
-            {differences.length > 0 ? (
-              <>
-                <Typography variant="h6">You are incorrect 😢</Typography>
-                <List>
-                  {differences.map((diff, index) => (
-                    <ListItem key={index}>
-                      <ListItemText
-                        primary={`Column: ${diff.column}`}
-                        secondary={
-                          <>
-                            {diff.missingWords.length > 0 && (
-                              <div>
-                                Missing words: {diff.missingWords.join(", ")}
-                              </div>
-                            )}
-                            {diff.extraWords.length > 0 && (
-                              <div>
-                                Extra words: {diff.extraWords.join(", ")}
-                              </div>
-                            )}
-                          </>
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </>
-            ) : (
-              <Typography variant="h6">
-                You are correct! Congratulations! 🎉🎉🎉
-              </Typography>
-            )}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleAnswerDialogClose}>Cancel</Button>
-          <Button variant="contained" onClick={() => leaveSession()}>
-            Leave the session
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {game && (
+  <Dialog
+    open={openAnswerDialog}
+    TransitionComponent={Transition}
+    keepMounted
+    onClose={handleAnswerDialogClose}
+    aria-describedby="alert-dialog-answers-description"
+  >
+    <DialogTitle>Your answers</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-answers-description">
+        {differences.length > 0 ? (
+          <>
+            <Typography variant="h6">You are incorrect 😢</Typography>
+            <List>
+              {differences.map((diff, index) => (
+                <ListItem key={index}>
+                  <ListItemText
+                    primary={`Column: ${diff.column}`}
+                    secondary={
+                      <>
+                        {diff.missingWords.length > 0 && (
+                          <div>
+                            Missing words: {diff.missingWords.join(", ")}
+                          </div>
+                        )}
+                        {diff.extraWords.length > 0 && (
+                          <div>
+                            Extra words: {diff.extraWords.join(", ")}
+                          </div>
+                        )}
+                      </>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </>
+        ) : (
+          <Typography variant="h6">
+            {game.gameType === "Ranking"
+              ? "Ranking submitted! 🎉🎉🎉"
+              : "You are correct! Congratulations! 🎉🎉🎉"}
+          </Typography>
+        )}
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleAnswerDialogClose}>Cancel</Button>
+      <Button variant="contained" onClick={() => leaveSession()}>
+        Leave the session
+      </Button>
+    </DialogActions>
+  </Dialog>
+)}
+
     </Box>
   );
 };
