@@ -20,7 +20,7 @@ import { useTheme } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { getUserID } from "../redux/slices/user";
 
-function GameBox({ handleCreateNewGame }) {
+function GameBox({ handleCreateNewGame, searchTerm }) {
   const theme = useTheme();
 
   const gamesPerPage = 1;
@@ -98,6 +98,12 @@ function GameBox({ handleCreateNewGame }) {
     fetchPageCount();
   }, [userID]);
 
+  const filteredGameData = games?.filter(
+    (game) =>
+      (game.gameTitle && game.gameTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (game.gameID && game.gameID.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) || [];
+
   return (
     <Grid
       style={{ width: "100%", display: "flex", justifyContent: "center" }}
@@ -106,7 +112,7 @@ function GameBox({ handleCreateNewGame }) {
     >
       {games && games.length > 0 ? (
         <>
-          {games.map((game) => (
+          {filteredGameData.map((game) => (
             <Grid style={{ width: "100%" }} item key={game.id}>
               <Card
                 variant=""
