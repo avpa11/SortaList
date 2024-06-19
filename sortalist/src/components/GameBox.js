@@ -23,7 +23,7 @@ import { getUserID } from "../redux/slices/user";
 function GameBox({ handleCreateNewGame, searchTerm }) {
   const theme = useTheme();
 
-  const gamesPerPage = 1;
+  const gamesPerPage = 5;
   const [games, setGames] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -98,11 +98,14 @@ function GameBox({ handleCreateNewGame, searchTerm }) {
     fetchPageCount();
   }, [userID]);
 
-  const filteredGameData = games?.filter(
-    (game) =>
-      (game.gameTitle && game.gameTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (game.gameID && game.gameID.toLowerCase().includes(searchTerm.toLowerCase()))
-  ) || [];
+  const filteredGameData =
+    games?.filter(
+      (game) =>
+        (game.gameTitle &&
+          game.gameTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (game.gameID &&
+          game.gameID.toLowerCase().includes(searchTerm.toLowerCase()))
+    ) || [];
 
   return (
     <Grid

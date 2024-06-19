@@ -6,6 +6,7 @@ import {
   Divider,
   useTheme,
   Grid,
+  Alert,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
@@ -14,6 +15,13 @@ const CreateGameFinish = ({ gameData, handleFinish }) => {
   const finishGameCreation = () => {
     handleFinish();
   };
+  const [isAlertOpen, setAlertOpen] = React.useState(false);
+  const copyToClipboard = (value) => {
+    navigator.clipboard.writeText(value);
+    setAlertOpen(true);
+    setTimeout(() => setAlertOpen(false), 3000);
+  };
+
   return (
     <Grid
       style={{ width: "100%", display: "flex", justifyContent: "center" }}
@@ -61,11 +69,53 @@ const CreateGameFinish = ({ gameData, handleFinish }) => {
             bgcolor="white"
           >
             <Typography variant="body1">{gameData.gameID}</Typography>
-            <Button startIcon={<ContentCopyIcon />} sx={{ marginLeft: "auto" }}>
+            <Button
+              onClick={() => copyToClipboard(gameData.gameID)}
+              startIcon={<ContentCopyIcon />}
+              sx={{ marginLeft: "auto" }}
+            >
               Copy
             </Button>
           </Box>
         </Box>
+
+        <Box mb={3}>
+          <Typography
+            style={{ color: "#1F64FF", fontWeight: "bold" }}
+            variant="body1"
+            mb={1}
+          >
+            Session Link
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              paddingLeft: 2, // Add padding
+              alignItems: "center", // Align items vertically
+            }}
+            bgcolor="white"
+          >
+            <Typography variant="body1">
+              {window.location.origin + "/guest?gameID=" + gameData.gameID}
+            </Typography>
+            <Button
+              onClick={() =>
+                copyToClipboard(
+                  window.location.origin + "/guest?gameID=" + gameData.gameID
+                )
+              }
+              startIcon={<ContentCopyIcon />}
+              sx={{ marginLeft: "auto" }}
+            >
+              Copy
+            </Button>
+          </Box>
+        </Box>
+
+        {isAlertOpen && (
+          <Alert severity="success">Successfully copied to clipboard!</Alert>
+        )}
 
         <Divider sx={{ my: 2, borderColor: "grey", borderWidth: 1.3 }} mb={3} />
 

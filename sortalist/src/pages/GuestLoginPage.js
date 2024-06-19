@@ -1,7 +1,7 @@
 import { Button, Divider, Grid, Typography } from "@mui/material";
 import { TextFieldStyled, WhiteCardBox } from "../components/styled";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FieldWithSeparateLabel from "../components/FieldWithSeparateLabel";
 import { Controller, useForm } from "react-hook-form";
 import Loading from "../components/Loading";
@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 const GuestLoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const gameID = searchParams.get("gameID");
 
   const {
     handleSubmit,
@@ -99,7 +101,7 @@ const GuestLoginPage = () => {
                   )}
                   name="sessionId"
                   control={control}
-                  defaultValue={""}
+                  defaultValue={gameID || ""}
                 />
               </FieldWithSeparateLabel>
             </Grid>
