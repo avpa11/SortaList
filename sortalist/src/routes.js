@@ -17,6 +17,7 @@ import TopBarLayout from "./components/layouts/NavBarWithContentLayout";
 import AboutYouPage from "./pages/AboutYouPage";
 import GamePage from "./pages/GamePage";
 import SideBarWithContentLayout from "./components/layouts/SideBarWithContentLayout";
+import NotFoundPage from "./pages/NotFoundPage";
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -95,7 +96,7 @@ const AppRoutes = () => {
         </Route>
 
         <Route element={<TopBarLayout />}>
-          <Route path="/instructions" element={<InstructionsPage />}></Route>
+          <Route path="/how-it-works" element={<InstructionsPage />}></Route>
         </Route>
 
         <Route element={<TopBarLayout />}>
@@ -129,6 +130,18 @@ const AppRoutes = () => {
             <Route path="/play" element={<GamePage />} />
           </Route>
         )}
+
+        <Route
+          element={
+            <MiddleContentWithTopBarLayout
+              style={{
+                backgroundImage: `linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%)`,
+              }}
+            />
+          }
+        >
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Routes>
     </>
   );

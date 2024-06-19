@@ -117,7 +117,7 @@ function NavBar() {
                 <Box mr={5}>
                   <MuiLink
                     component={Link}
-                    to="/instructions"
+                    to="/how-it-works"
                     color="inherit"
                     underline="none"
                   >

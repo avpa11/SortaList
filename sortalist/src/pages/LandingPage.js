@@ -50,6 +50,13 @@ const LandingPage = () => {
                   Get Started
                 </Button>
                 <ContinueWithGoogleButton />
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => navigate("/guest")}
+                >
+                  Join a Session
+                </Button>
               </Box>
             ) : (
               <Box mt={2} display="flex" gap={2}>

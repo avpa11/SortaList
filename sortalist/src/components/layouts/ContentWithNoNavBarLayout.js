@@ -5,7 +5,7 @@ import { HeaderContentFooterBox, MiddleContentGrid } from "../styled";
 
 const ContentWithNoNavBarLayout = ({ sx, style }) => {
   return (
-    <HeaderContentFooterBox sx={sx} style={style}>
+    <HeaderContentFooterBox sx={sx} style={style} width={"100vw"}>
       <MiddleContentGrid container flex={1}>
         <Grid item>
           <Outlet />

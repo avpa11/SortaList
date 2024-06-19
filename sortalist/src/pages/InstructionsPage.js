@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import MotionButton from "../components/MotionButton";
 
 function Instructions() {
   const theme = useTheme();
@@ -29,21 +24,12 @@ function Instructions() {
           <img src="/images/GreenBlob.png" alt="GreenBlob" />
         </Box>
       )}
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center">
         <Typography variant="h3" fontWeight="bold" mt={7} pl={isMobile ? 0 : 5}>
           How It Works
         </Typography>
       </Box>
-      <Box 
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mt={4}
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
         <Box
           display="flex"
           justifyContent="center"
@@ -117,10 +103,8 @@ function Instructions() {
       </Box>
 
       {/* Get started button */}
-      <Box display="flex" justifyContent="center" mt={4}  pl={isMobile ? 0 : 5}>
-        <Button variant="contained" color="primary" style={{ width: "200px" }}>
-          Get Started
-        </Button>
+      <Box display="flex" justifyContent="center" mt={4} pl={isMobile ? 0 : 5}>
+        <MotionButton />
       </Box>
     </Box>
   );
