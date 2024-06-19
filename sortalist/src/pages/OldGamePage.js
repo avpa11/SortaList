@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getUserGameSession, joinSession } from "../redux/slices/user";
 import { forwardRef, useEffect, useState } from "react";
-import { gamesCol } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth, gamesCol, gameResultsCol } from "../firebase/firebase";
+import { addDoc, doc, getDoc } from "firebase/firestore";
 import {
   Box,
   Button,
@@ -64,7 +64,21 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-const GamePageTemp = () => {
+const saveAnswersToFirestore = async (user, sessionId, answers) => {
+  try {
+    const resultRef = doc(gameResultsCol, sessionId);
+    await addDoc(resultRef, {
+      uid: user.uid,
+      answers: answers
+    });
+    console.log("Answers saved successfully!");
+  } catch (error) {
+    console.error("Error saving answers: ", error);
+  }
+};
+
+const GamePage = () => {
+  const user = auth.currentUser;
   const userSessionId = useSelector(getUserGameSession);
   const [game, setGame] = useState();
   const [columns, setColumns] = useState({});
@@ -124,7 +138,7 @@ const GamePageTemp = () => {
 
   const [openAnswerDialog, setOpenAnswerDialog] = useState(false);
 
-  const handleAnswerDialogOpen = () => { 
+  const handleAnswerDialogOpen = async () => { 
     if (game.gameType === "Sorting") {
       const columnsToCompare = Object.values(columns)
       .filter((column) => column.name !== "Sort the words")
@@ -138,6 +152,10 @@ const GamePageTemp = () => {
 
     const differences = findDifferences(columnsToCompare, normalizedCategories);
     setDifferences(differences);
+
+    // Save answers to Firestore
+    await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
+
     setOpenAnswerDialog(true);
     } else{
       setOpenAnswerDialog(true);
@@ -386,4 +404,4 @@ const GamePageTemp = () => {
   );
 };
 
-export default GamePageTemp;
+export default GamePage;

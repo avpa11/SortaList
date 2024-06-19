@@ -35,7 +35,9 @@ const RankingGameComponent = ({ game }) => {
               }}
             >
               {rankedItems.map((item, index) => (
-                <Box display="flex" alignItems="center"                sx={{
+                
+                <Box display="flex" alignItems="center"                
+                sx={{
                     borderRadius: 2,
                     padding: 1,
                     marginBottom: 1,
@@ -44,7 +46,7 @@ const RankingGameComponent = ({ game }) => {
                   <Typography variant="h4" sx={{ marginRight: 2 }}>
                     {index + 1}.
                   </Typography>
-                  <Draggable key={item} draggableId={item} index={index}>
+                  <Draggable key={`${item}-${index}`} draggableId={`${item}-${index}`} index={index}>
                     {(provided) => (
                       <Box
                         ref={provided.innerRef}
