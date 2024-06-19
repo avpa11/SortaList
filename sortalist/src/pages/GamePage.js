@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserGameSession, joinSession } from "../redux/slices/user";
 import { forwardRef, useEffect, useState } from "react";
 import { auth, gamesCol, gameResultsCol } from "../firebase/firebase";
-import { addDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
+import { updateDoc, setDoc, doc, getDoc } from "firebase/firestore";
 import {
   Box,
   Button,
@@ -66,17 +66,30 @@ const onDragEnd = (result, columns, setColumns) => {
 
 const saveAnswersToFirestore = async (user, sessionId, answers) => {
   try {
-    await addDoc(gameResultsCol, {
-      uid: user.uid,
-      sessionId,
-      answers,
-      timestamp: serverTimestamp(),
-    });
-    console.log("Answers saved successfully!");
+    const userSessionDocPath = `${user.uid}_${sessionId}`;
+    const resultRef = doc(gameResultsCol, userSessionDocPath);
+    // Check if document exists
+    const docSnap = await getDoc(resultRef);
+
+    if (docSnap.exists()) {
+      // Document exists, update it
+      await updateDoc(resultRef, {
+        answers: answers
+      });
+      console.log("Answers updated successfully!");
+    } else {
+      // Document does not exist, create a new one
+      await setDoc(resultRef, {
+        uid: user.uid,
+        answers: answers
+      });
+      console.log("Answers saved successfully!");
+    }
   } catch (error) {
     console.error("Error saving answers: ", error);
   }
 };
+
 
 const GamePage = () => {
   const user = auth.currentUser;
