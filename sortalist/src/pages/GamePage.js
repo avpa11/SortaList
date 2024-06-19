@@ -146,6 +146,7 @@ const GamePage = () => {
       handleTimeUp();
     }
     return () => clearInterval(timerInterval);
+    // eslint-disable-next-line
   }, [timer]);
 
   const handleTimeUp = () => {
