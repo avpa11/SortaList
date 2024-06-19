@@ -141,7 +141,8 @@ const GamePage = () => {
       timerInterval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
-    } else if (timer === 0) {
+    } 
+    if(timer === 0) {
       handleTimeUp();
     }
     return () => clearInterval(timerInterval);
@@ -171,11 +172,15 @@ const GamePage = () => {
     await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
 
     setIsSubmitted(true);
-    setOpenAnswerDialog(true);
+    
+    setOpenAnswerDialog(true);    
   };
 
   const handleAnswerDialogClose = () => {
     setOpenAnswerDialog(false);
+    if(!game.allowMultipleSubmissions || timer === 0){
+      leaveSession();
+    }
   };
 
   const handleLeaveDialogOpen = () => {
@@ -364,13 +369,13 @@ const GamePage = () => {
       </Dialog>
 
       <Dialog
-        open={openAnswerDialog}
+        open={openAnswerDialog && game.revealAnswers}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleAnswerDialogClose}
         aria-describedby="alert-dialog-answers-description"
       >
-        <DialogTitle>Your answers</DialogTitle>
+        <DialogTitle>Answers submitted</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-answers-description">
             {differences.length > 0 ? (
@@ -416,9 +421,32 @@ const GamePage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openAnswerDialog && !game.revealAnswers}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleAnswerDialogClose}
+        aria-describedby="alert-dialog-answers-description"
+      >
+        <DialogTitle>Answers submitted</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-answers-description">
+              <Typography variant="h6">
+                Your answers have been submitted!
+              </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAnswerDialogClose}>Cancel</Button>
+          <Button variant="contained" onClick={() => leaveSession()}>
+            Leave the session
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };
 
 export default GamePage;
-
