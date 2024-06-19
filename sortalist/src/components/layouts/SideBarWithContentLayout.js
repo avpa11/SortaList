@@ -71,6 +71,14 @@ function SideBarWithContentLayout() {
     setAnchorEl(null);
   };
 
+  const handleAnalyticsClick = () => {
+     navigate('/analytics');
+  };
+
+  const handleDashboardClick = () => {
+    navigate('/dashboard');
+  }
+
   const drawer = (
     <>
       <Toolbar>
@@ -96,12 +104,20 @@ function SideBarWithContentLayout() {
         </Typography>
       </Toolbar>
       <List>
-        <ListItem>
+        <ListItem onClick={handleDashboardClick}>
           <ListItemButton>
             <ListItemIcon>
               <GridViewIcon />
             </ListItemIcon>
             <ListItemText primary={"Dashboard"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem onClick={handleAnalyticsClick}>
+          <ListItemButton>
+            <ListItemIcon>
+              <GridViewIcon />
+            </ListItemIcon>
+            <ListItemText primary={"Analytics"} />
           </ListItemButton>
         </ListItem>
       </List>

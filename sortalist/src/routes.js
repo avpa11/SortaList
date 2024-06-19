@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { getIsUserAuth } from "./redux/slices/user";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import OnboardingPage from "./pages/Onboarding";
 import MiddleContentWithTopBarLayout from "./components/layouts/ContentWithTopNavBarLayout";
 import ContentWithNoNavBarLayout from "./components/layouts/ContentWithNoNavBarLayout";
@@ -104,6 +105,12 @@ const AppRoutes = () => {
         {isUserAuth && (
           <Route element={<SideBarWithContentLayout />}>
             <Route path="/dashboard" element={<DashboardPage />}></Route>
+          </Route>
+        )}
+
+        {isUserAuth && (
+          <Route element={<SideBarWithContentLayout />}>
+            <Route path="/analytics" element={<AnalyticsPage />}></Route>
           </Route>
         )}
 

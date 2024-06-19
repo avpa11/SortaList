@@ -64,7 +64,7 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-const saveAnswersToFirestore = async (user, sessionId, answers) => {
+const saveAnswersToFirestore = async (user, sessionId, numWrong) => {
   try {
     const userSessionDocPath = `${user.uid}_${sessionId}`;
     const resultRef = doc(gameResultsCol, userSessionDocPath);
@@ -74,14 +74,15 @@ const saveAnswersToFirestore = async (user, sessionId, answers) => {
     if (docSnap.exists()) {
       // Document exists, update it
       await updateDoc(resultRef, {
-        answers: answers
+        numWrong: numWrong
       });
       console.log("Answers updated successfully!");
     } else {
       // Document does not exist, create a new one
       await setDoc(resultRef, {
         uid: user.uid,
-        answers: answers
+        sessionId: sessionId,
+        numWrong: numWrong
       });
       console.log("Answers saved successfully!");
     }
@@ -185,7 +186,7 @@ const GamePage = () => {
     setDifferences(differences);
 
     // Save answers to Firestore
-    await saveAnswersToFirestore(user, userSessionId, columnsToCompare);
+    await saveAnswersToFirestore(user, userSessionId, differences.length);
     setOpenAnswerDialog(true);
 
   } 
