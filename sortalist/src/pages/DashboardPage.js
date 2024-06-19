@@ -15,6 +15,8 @@ import AddWords from "../components/AddWords";
 import AddRankingWords from "../components/AddRankingWords";
 import Divider from "@mui/material/Divider";
 import TextField from '@mui/material/TextField';
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
 
 const DashboardPage = () => {
   const [currentStep, setCurrentStep] = useState(0); // Initialize current step
@@ -150,6 +152,25 @@ const DashboardPage = () => {
 
       {!creatingNewGame && (
         <Box mb={3}>
+          {/* Search Bar at the top */}
+          <TextField
+            label="Search Games"
+            placeholder="Search games..."
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            style={{
+              width: isMobile ? '100%' : '30%', // Use isMobile to set width
+              marginBottom: '20px', // Add some spacing below
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
           <Typography variant="h5" fontWeight="bold" mb={3}>
             Games
           </Typography>
@@ -181,13 +202,6 @@ const DashboardPage = () => {
           >
             + New Game
           </Button>
-          <TextField
-            value={searchTerm}
-            onChange={handleSearchChange}
-            placeholder="Search..."
-            variant="outlined"
-            fullWidth
-          />
         </Box>
       )}
 
