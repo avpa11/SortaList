@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import GameBox from "../components/AnalyticsGameBox";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
 
 const DashboardPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -88,12 +90,23 @@ const DashboardPage = () => {
         </Box>
 
         <TextField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Search..."
-          variant="outlined"
-          fullWidth
-        />
+            label="Search Games"
+            placeholder="Search games..."
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            style={{
+              width: isMobile ? '100%' : '30%', // Use isMobile to set width
+              marginBottom: '20px', // Add some spacing below
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
       </Box>
 
       <Box display="flex" flexDirection="column" width={"auto"}>
