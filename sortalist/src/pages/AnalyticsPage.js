@@ -71,24 +71,6 @@ const DashboardPage = () => {
       )}
 
       <Box mb={3}>
-        <Typography variant="h5" fontWeight="bold" mb={3}>
-          Games
-        </Typography>
-        <Box>
-          <Typography fontWeight="bold" ml={3}>
-            Sessions
-          </Typography>
-          <Divider
-            sx={{
-              my: 2,
-              backgroundImage: `linear-gradient(to right, #1F64FF, #1F64FF 11%, #F5F6FA 11%)`,
-              backgroundSize: "100% 2px",
-              backgroundRepeat: "no-repeat",
-              height: 2,
-            }}
-          />
-        </Box>
-
         <TextField
             label="Search Games"
             placeholder="Search games..."
@@ -107,6 +89,23 @@ const DashboardPage = () => {
               ),
             }}
           />
+        <Typography variant="h5" fontWeight="bold" mb={3}>
+          Games
+        </Typography>
+        <Box>
+          <Typography fontWeight="bold" ml={3}>
+            Sessions
+          </Typography>
+          <Divider
+            sx={{
+              my: 2,
+              backgroundImage: `linear-gradient(to right, #1F64FF, #1F64FF 11%, #F5F6FA 11%)`,
+              backgroundSize: "100% 2px",
+              backgroundRepeat: "no-repeat",
+              height: 2,
+            }}
+          />
+        </Box>
       </Box>
 
       <Box display="flex" flexDirection="column" width={"auto"}>
