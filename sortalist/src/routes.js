@@ -18,6 +18,7 @@ import AboutYouPage from "./pages/AboutYouPage";
 import GamePage from "./pages/GamePage";
 import SideBarWithContentLayout from "./components/layouts/SideBarWithContentLayout";
 import NotFoundPage from "./pages/NotFoundPage";
+import GameAnalytics from "./pages/GameAnalytics";
 // This component returns all the routes we will have on the platform
 const AppRoutes = () => {
   const isUserAuth = useSelector(getIsUserAuth);
@@ -112,6 +113,12 @@ const AppRoutes = () => {
         {isUserAuth && (
           <Route element={<SideBarWithContentLayout />}>
             <Route path="/analytics" element={<AnalyticsPage />}></Route>
+          </Route>
+        )}
+
+        {isUserAuth && (
+          <Route element={<SideBarWithContentLayout />}>
+            <Route path="/gameanalytics" element={<GameAnalytics />}></Route>
           </Route>
         )}
 

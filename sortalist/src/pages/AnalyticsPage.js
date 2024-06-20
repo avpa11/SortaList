@@ -5,23 +5,18 @@ import {
   useMediaQuery,
   useTheme,
   Divider,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  TextField
 } from "@mui/material";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import GameBox from "../components/AnalyticsGameBox";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
 
-const DashboardPage = () => {
+const AnalyticsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [open, setOpen] = useState(false);
-  const [gameResults, setGameResults] = useState([]);
-  const [selectedGameTitle, setSelectedGameTitle] = useState('');
-  const [totalResults, setTotalResults] = useState(0);
   const db = getFirestore();
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -43,17 +38,20 @@ const DashboardPage = () => {
           results++;
         }
       });
-      setGameResults(results);
-      setSelectedGameTitle(gameTitle);
-      setTotalResults(totalResults);
-      setOpen(true);
+      handleGameAnalyticsOpen(gameTitle,results,totalResults);
     } catch (error) {
       console.error('Error fetching game results:', error);
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleGameAnalyticsOpen = async (gameTitle,results,totalResults) => {
+    navigate("/gameanalytics", {
+      state: {
+        gameTitle,
+        totalResults,
+        results,
+      },
+    });    
   };
 
   return (
@@ -112,21 +110,8 @@ const DashboardPage = () => {
         <GameBox searchTerm={searchTerm} handleCardClick={handleCardClick} />
       </Box>
 
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>{selectedGameTitle}</DialogTitle>
-        <DialogContent>
-          {totalResults > 0 ? (
-            <>
-            <Typography>Number of Players: {totalResults}</Typography>
-            <Typography>Number of Games Lost: {gameResults}</Typography>
-          </>
-          ) : (
-            <Typography>No results found</Typography>
-          )}
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 };
 
-export default DashboardPage;
+export default AnalyticsPage;
