@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
   useMediaQuery,
   useTheme,
-  Divider,
-  TextField
+  TextField,
+  Tab,
+  Tabs
 } from "@mui/material";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import GameBox from "../components/AnalyticsGameBox";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getUserID } from "../redux/slices/user";
+import Chart from "chart.js/auto";
 
-const AnalyticsPage = () => {
+const InsightsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [tabValue, setTabValue] = useState(0);
+  const [gamesSnapshot, setGamesSnapshot] = useState(null);
+  const userID = useSelector(getUserID);
   const db = getFirestore();
   const navigate = useNavigate();
 
@@ -22,10 +29,14 @@ const AnalyticsPage = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleCardClick = async (gameID, gameTitle) => {
+  const handleSessionClick = async (gameID, gameTitle) => {
     try {
       const q = query(collection(db, 'gameResults'), where('sessionId', '==', gameID));
       const querySnapshot = await getDocs(q);
@@ -42,7 +53,7 @@ const AnalyticsPage = () => {
     } catch (error) {
       console.error('Error fetching game results:', error);
     }
-  };
+  }; 
 
   const handleGameAnalyticsOpen = async (gameTitle,results,totalResults) => {
     navigate("/gameanalytics", {
@@ -58,7 +69,7 @@ const AnalyticsPage = () => {
     <Box p={3}>
       {!isMobile && (
         <Box position="absolute" bottom={0} left={0} zIndex={-1}>
-          <img src="/images/PurpleBlob2.png" alt="PutpleBlob2" />
+          <img src="/images/PurpleBlob2.png" alt="PurpleBlob2" />
         </Box>
       )}
 
@@ -90,28 +101,18 @@ const AnalyticsPage = () => {
         <Typography variant="h5" fontWeight="bold" mb={3}>
           Games
         </Typography>
-        <Box>
-          <Typography fontWeight="bold" ml={3}>
-            Sessions
-          </Typography>
-          <Divider
-            sx={{
-              my: 2,
-              backgroundImage: `linear-gradient(to right, #1F64FF, #1F64FF 11%, #F5F6FA 11%)`,
-              backgroundSize: "100% 2px",
-              backgroundRepeat: "no-repeat",
-              height: 2,
-            }}
-          />
+          <Tabs value={tabValue} onChange={handleTabChange}>
+            <Tab label="Sessions" />
+          </Tabs>
+      </Box>
+      
+      {tabValue === 0 && (
+        <Box display="flex" flexDirection="column" width={"auto"}>
+          <GameBox searchTerm={searchTerm} handleCardClick={handleSessionClick} />
         </Box>
-      </Box>
-
-      <Box display="flex" flexDirection="column" width={"auto"}>
-        <GameBox searchTerm={searchTerm} handleCardClick={handleCardClick} />
-      </Box>
-
+      )}
     </Box>
   );
 };
 
-export default AnalyticsPage;
+export default InsightsPage;

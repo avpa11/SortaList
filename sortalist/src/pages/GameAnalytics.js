@@ -2,6 +2,9 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Doughnut } from 'react-chartjs-2';
+import {Chart, ArcElement} from 'chart.js'
+Chart.register(ArcElement);
 
 const GameAnalytics = () => {
   const theme = useTheme();
@@ -10,6 +13,21 @@ const GameAnalytics = () => {
   const { gameTitle, totalResults, results } = location.state;
   const correct =  totalResults - results;
   
+  const chartData = {
+    labels: ["Correct Answers", "Incorrect Answers"],
+    datasets: [
+      {
+        data: [correct, results],
+        backgroundColor: [
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+        ],
+        hoverBackgroundColor: ["rgba(54, 162, 235, 0.8)", "rgba(255, 99, 132, 0.8)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <Box>
     {!isMobile && (
@@ -44,13 +62,12 @@ const GameAnalytics = () => {
         <Box justifyContent="center" alignItems="center" p={2} mb={2}>
           <Box
             component="img"
-            alt="Envelope Icon"
-            src="/images/EnvelopeIcon.png"
+            alt="Customize Icon"
+            src="/images/CustomizeIcon.png"
             sx={{ display: "block", margin: "auto" }}
           />
-          <Box m={2} />
-          <Box m={2} />
-
+        <Box m={2} />
+        <Box m={2} />
           <Typography variant="body1" align="center">
           {totalResults} players joined your game!
           </Typography>
@@ -71,12 +88,11 @@ const GameAnalytics = () => {
           </Typography>
         </Box>
 
-        {/* Educate box */}
         <Box justifyContent="center" alignItems="center" p={2} mb={2}>
           <Box
             component="img"
-            alt="Calender Icon"
-            src="/images/CalenderIcon.png"
+            alt="Customize Icon"
+            src="/images/CustomizeIcon.png"
             sx={{ display: "block", margin: "auto" }}
           />
           <Box m={2} />
@@ -86,6 +102,11 @@ const GameAnalytics = () => {
           </Typography>
         </Box>
       </Box>
+    </Box>
+    <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+      <div style={{ width: '200px', height: '200px' }}>
+        <Doughnut data={chartData} />
+      </div>
     </Box>
   </Box>
 );

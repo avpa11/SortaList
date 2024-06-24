@@ -71,8 +71,8 @@ function SideBarWithContentLayout() {
     setAnchorEl(null);
   };
 
-  const handleAnalyticsClick = () => {
-     navigate('/analytics');
+  const handleInsightsClick = () => {
+     navigate('/insights');
   };
 
   const handleDashboardClick = () => {
@@ -112,12 +112,12 @@ function SideBarWithContentLayout() {
             <ListItemText primary={"Dashboard"} />
           </ListItemButton>
         </ListItem>
-        <ListItem onClick={handleAnalyticsClick}>
+        <ListItem onClick={handleInsightsClick}>
           <ListItemButton>
             <ListItemIcon>
               <GridViewIcon />
             </ListItemIcon>
-            <ListItemText primary={"Analytics"} />
+            <ListItemText primary={"Insights"} />
           </ListItemButton>
         </ListItem>
       </List>
