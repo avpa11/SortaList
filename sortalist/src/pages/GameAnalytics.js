@@ -19,13 +19,16 @@ const GameAnalytics = () => {
       {
         data: [correct, results],
         backgroundColor: [
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 99, 132, 0.6)",
+          "rgba(34, 139, 34, 0.6)",  // Forest Green for correct answers
+          "rgba(220, 20, 60, 0.6)",  // Crimson for wrong answers
         ],
-        hoverBackgroundColor: ["rgba(54, 162, 235, 0.8)", "rgba(255, 99, 132, 0.8)"],
+        hoverBackgroundColor: [
+          "rgba(50, 205, 50, 0.8)",  // Lime Green for correct answers
+          "rgba(255, 99, 71, 0.8)",  // Tomato for wrong answers
+        ],
         borderWidth: 1,
       },
-    ],
+    ],    
   };
 
   return (
@@ -53,13 +56,18 @@ const GameAnalytics = () => {
       </Typography>
     </Box>
     <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+      <div style={{ width: '200px', height: '200px' }}>
+        <Doughnut data={chartData} />
+      </div>
+    </Box>
+    <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
       <Box
         display="flex"
         justifyContent="center"
         alignItems="center"
         flexDirection={isMobile ? "column" : "row"}
       >
-        <Box justifyContent="center" alignItems="center" p={2} mb={2}>
+        <Box justifyContent="center" alignItems="center" p={2} mb={2} sx={{ backgroundColor: 'snow' }}>
           <Box
             component="img"
             alt="Customize Icon"
@@ -73,7 +81,7 @@ const GameAnalytics = () => {
           </Typography>
         </Box>
 
-        <Box justifyContent="center" alignItems="center" p={2} mb={2}>
+        <Box justifyContent="center" alignItems="center" p={2} mb={2} sx={{ backgroundColor: 'snow' }}>
           <Box
             component="img"
             alt="Customize Icon"
@@ -88,7 +96,7 @@ const GameAnalytics = () => {
           </Typography>
         </Box>
 
-        <Box justifyContent="center" alignItems="center" p={2} mb={2}>
+        <Box justifyContent="center" alignItems="center" p={2} mb={2} sx={{ backgroundColor: 'snow' }}>
           <Box
             component="img"
             alt="Customize Icon"
@@ -102,11 +110,6 @@ const GameAnalytics = () => {
           </Typography>
         </Box>
       </Box>
-    </Box>
-    <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
-      <div style={{ width: '200px', height: '200px' }}>
-        <Doughnut data={chartData} />
-      </div>
     </Box>
   </Box>
 );

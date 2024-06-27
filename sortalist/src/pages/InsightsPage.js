@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -13,15 +13,10 @@ import GameBox from "../components/AnalyticsGameBox";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getUserID } from "../redux/slices/user";
-import Chart from "chart.js/auto";
 
 const InsightsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [tabValue, setTabValue] = useState(0);
-  const [gamesSnapshot, setGamesSnapshot] = useState(null);
-  const userID = useSelector(getUserID);
   const db = getFirestore();
   const navigate = useNavigate();
 
@@ -29,7 +24,7 @@ const InsightsPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue) => {
     setTabValue(newValue);
   };
 
